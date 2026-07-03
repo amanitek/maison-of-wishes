@@ -1368,6 +1368,10 @@ footer {
 
 /* Invoice Modal Overrides (Fixes double white card bug and page truncation) */
 #invoice-modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  transform: none !important;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
