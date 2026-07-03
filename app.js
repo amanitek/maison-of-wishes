@@ -549,7 +549,7 @@ function handleCheckout(e) {
   openInvoiceModal();
 
   // Helper to submit FormData to Formspree
-  function submitOrderToFormspree(pdfBlob) {
+  function submitOrderToFormspree(imageBlob) {
     if (FORMSPREE_FORM_ID && FORMSPREE_FORM_ID !== "YOUR_FORMSPREE_ID") {
       const formspreeUrl = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
       const formData = new FormData();
@@ -568,8 +568,8 @@ function handleCheckout(e) {
         return `${item.quantity}x ${product.name} (MW-00${product.id}) [${product.price} DT]`;
       }).join(", "));
 
-      if (pdfBlob) {
-        formData.append("facture_pdf", pdfBlob, `Facture_${invoiceNum}.pdf`);
+      if (imageBlob) {
+        formData.append("facture_image", imageBlob, `Facture_${invoiceNum}.png`);
       }
 
       fetch(formspreeUrl, {
@@ -592,32 +592,30 @@ function handleCheckout(e) {
     }
   }
 
-  // 5. Generate PDF Invoice as a Blob in the background and submit to Formspree
+  // 5. Generate PNG Invoice image in the background and submit to Formspree
   setTimeout(() => {
     const invoiceElement = document.getElementById("invoice-sheet");
-    if (invoiceElement && typeof html2pdf !== "undefined") {
-      const opt = {
-        margin:       [10, 10, 10, 10],
-        filename:     `Facture_${invoiceNum}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, logging: false },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      // Generate the PDF as a Blob instead of downloading it (.save())
-      html2pdf().set(opt).from(invoiceElement).output('blob')
-        .then((pdfBlob) => {
-          submitOrderToFormspree(pdfBlob);
-        })
-        .catch(err => {
-          console.warn("Error generating PDF Blob, falling back to text submission: ", err);
-          submitOrderToFormspree(null);
-        });
+    if (invoiceElement && typeof html2canvas !== "undefined") {
+      html2canvas(invoiceElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff"
+      })
+      .then((canvas) => {
+        canvas.toBlob((imageBlob) => {
+          submitOrderToFormspree(imageBlob);
+        }, "image/png");
+      })
+      .catch(err => {
+        console.warn("Error generating PNG image, falling back to text submission: ", err);
+        submitOrderToFormspree(null);
+      });
     } else {
-      console.warn("html2pdf library is not loaded. Falling back to text submission.");
+      console.warn("html2canvas is not available. Falling back to text submission.");
       submitOrderToFormspree(null);
     }
   }, 150);
   
-  alert("Merci pour votre commande ! Vos détails de livraison et votre facture PDF ont été envoyés par email avec succès.");
+  alert("Merci pour votre commande ! Vos détails de livraison et votre facture ont été envoyés par email avec succès.");
 }
