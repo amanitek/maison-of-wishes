@@ -583,29 +583,40 @@ function handleCheckout(e) {
   if (subtotalEl) subtotalEl.textContent = `${subtotal}.00 DT`;
   if (grandTotalEl) grandTotalEl.textContent = `${subtotal}.00 DT`;
 
-  // 4. Format WhatsApp Message Text
-  let messageText = `✨ *NOUVELLE COMMANDE - MAISON OF WISHES* ✨\n`;
-  messageText += `*Facture N° :* #${invoiceNum}\n\n`;
-  messageText += `👤 *Informations Client :*\n`;
+  // 4. Format WhatsApp Message Text as a clean Text Invoice (Facture Layout)
+  let messageText = `=============================\n`;
+  messageText += `🧾 *FACTURE DE COMMANDE #${invoiceNum}*\n`;
+  messageText += `*Maison of Wishes by ACH*\n`;
+  messageText += `=============================\n`;
+  messageText += `📅 *Date :* ${today}\n\n`;
+  
+  messageText += `👤 *INFORMATIONS CLIENT :*\n`;
+  messageText += `-----------------------------\n`;
   messageText += `• *Nom :* ${name}\n`;
   messageText += `• *Téléphone :* ${phone}\n`;
   messageText += `• *Gouvernorat :* ${city}\n`;
   messageText += `• *Adresse :* ${address}\n`;
   if (notes) {
-    messageText += `• *Note spéciale :* ${notes}\n`;
+    messageText += `• *Notes :* ${notes}\n`;
   }
-  messageText += `\n🛒 *Détails de la commande :*\n`;
+  messageText += `\n`;
+  
+  messageText += `🛒 *DÉTAILS DES CRÉATIONS :*\n`;
+  messageText += `-----------------------------\n`;
   
   cart.forEach(item => {
     const product = products.find(p => p.id === item.id);
     if (product) {
       const itemTotal = product.price * item.quantity;
-      messageText += `- ${item.quantity}x *${product.name}* (MW-00${product.id}) -> ${itemTotal} DT\n`;
+      messageText += `• ${item.quantity}x *${product.name}* (MW-00${product.id}) -> *${itemTotal} DT*\n`;
     }
   });
   
-  messageText += `\n💵 *Total à payer :* ${subtotal} DT\n`;
-  messageText += `_(Frais de livraison gérés séparément lors de la confirmation)_`;
+  messageText += `-----------------------------\n`;
+  messageText += `💵 *TOTAL :* *${subtotal}.00 DT*\n`;
+  messageText += `🚚 *Frais de livraison :* _À confirmer_\n`;
+  messageText += `=============================\n`;
+  messageText += `*Merci pour votre commande ! 🌸*`;
   
   // URL Encode
   const encodedText = encodeURIComponent(messageText);
