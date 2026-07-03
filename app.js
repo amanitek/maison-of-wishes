@@ -583,27 +583,29 @@ function handleCheckout(e) {
     console.warn("Formspree Form ID is not configured. Email notification skipped.");
   }
 
-  // 5. Generate and Download PDF Invoice locally in customer's browser
-  const invoiceElement = document.getElementById("invoice-sheet");
-  if (invoiceElement && typeof html2pdf !== "undefined") {
-    const opt = {
-      margin:       [10, 10, 10, 10],
-      filename:     `Facture_${invoiceNum}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    // Generate the PDF
-    html2pdf().set(opt).from(invoiceElement).save();
-  } else {
-    console.warn("html2pdf library is not loaded. PDF download skipped.");
-  }
-
-  // Close Checkout Modal & Open Invoice Modal
+  // 5. Open Invoice Modal first to make it visible in the layout tree
   closeCheckoutModal();
   closeCart();
   openInvoiceModal();
+  
+  // 6. Generate and Download PDF Invoice locally in customer's browser (delayed slightly so the modal renders first)
+  setTimeout(() => {
+    const invoiceElement = document.getElementById("invoice-sheet");
+    if (invoiceElement && typeof html2pdf !== "undefined") {
+      const opt = {
+        margin:       [10, 10, 10, 10],
+        filename:     `Facture_${invoiceNum}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      // Generate the PDF
+      html2pdf().set(opt).from(invoiceElement).save();
+    } else {
+      console.warn("html2pdf library is not loaded. PDF download skipped.");
+    }
+  }, 150);
   
   alert("Merci pour votre commande ! Vos détails de livraison ont été envoyés par email, et votre facture PDF a été générée automatiquement pour vos dossiers.");
 }
