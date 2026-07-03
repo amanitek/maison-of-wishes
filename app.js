@@ -60,6 +60,10 @@ const products = [
 
 
 
+// Formspree Form ID - For receiving orders directly in your email inbox (maisonofwishes@gmail.com)
+// Get your free ID at https://formspree.io/
+const FORMSPREE_FORM_ID = "YOUR_FORMSPREE_ID"; // Ex: "xpznqyzd"
+
 // Cart State
 let cart = [];
 
@@ -627,6 +631,63 @@ function handleCheckout(e) {
     whatsappUrl = `https://api.whatsapp.com/send?phone=${SELLER_WHATSAPP_NUMBER}&text=${encodedText}`;
   }
   
+  // 5. Submit order data to Formspree for Email delivery to maisonofwishes@gmail.com
+  if (FORMSPREE_FORM_ID && FORMSPREE_FORM_ID !== "YOUR_FORMSPREE_ID") {
+    const formspreeUrl = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
+    const emailBody = {
+      email: "maisonofwishes@gmail.com",
+      _subject: `Nouvelle Commande #${invoiceNum} - Maison of Wishes`,
+      "Facture N°": `#${invoiceNum}`,
+      "Date de commande": today,
+      "Nom complet": name,
+      "Téléphone": phone,
+      "Gouvernorat": city,
+      "Adresse": address,
+      "Notes spéciales": notes || "Aucune",
+      "Total à payer": `${subtotal}.00 DT`,
+      "Créations Commandées": cart.map(item => {
+        const product = products.find(p => p.id === item.id);
+        return `${item.quantity}x ${product.name} (MW-00${product.id}) [${product.price} DT]`;
+      }).join(", ")
+    };
+
+    fetch(formspreeUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(emailBody)
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.warn("Formspree submission failed with status: ", response.status);
+      }
+    })
+    .catch(err => {
+      console.warn("Formspree submission connection error: ", err);
+    });
+  } else {
+    console.warn("Formspree Form ID is not configured. Email notification skipped.");
+  }
+
+  // 6. Generate and Download PDF Invoice locally in customer's browser
+  const invoiceElement = document.getElementById("invoice-sheet");
+  if (invoiceElement && typeof html2pdf !== "undefined") {
+    const opt = {
+      margin:       [10, 10, 10, 10],
+      filename:     `Facture_${invoiceNum}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // Generate the PDF
+    html2pdf().set(opt).from(invoiceElement).save();
+  } else {
+    console.warn("html2pdf library is not loaded. PDF download skipped.");
+  }
+
   // Open WhatsApp in new window/tab
   window.open(whatsappUrl, "_blank");
   
@@ -635,5 +696,5 @@ function handleCheckout(e) {
   closeCart();
   openInvoiceModal();
   
-  alert("Merci pour votre commande ! Votre résumé va s'ouvrir sur WhatsApp, et votre facture a été générée. Vous pouvez l'imprimer ou l'enregistrer en PDF.");
+  alert("Merci pour votre commande ! Votre résumé va s'ouvrir sur WhatsApp, et votre facture PDF a été générée automatiquement pour vos dossiers.");
 }
