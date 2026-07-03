@@ -101,6 +101,12 @@ const checkoutModalOverlay = document.getElementById("checkout-modal-overlay");
 const closeCheckoutModalBtn = document.getElementById("close-checkout-modal-btn");
 const checkoutForm = document.getElementById("order-checkout-form");
 
+// Invoice Modal DOM Elements
+const invoiceModal = document.getElementById("invoice-modal");
+const invoiceModalOverlay = document.getElementById("invoice-modal-overlay");
+const closeInvoiceModalBtn = document.getElementById("close-invoice-modal-btn");
+const invoiceDoneBtn = document.getElementById("invoice-done-btn");
+
 // Initialize App
 document.addEventListener("DOMContentLoaded", () => {
   loadCartFromLocalStorage();
@@ -146,7 +152,7 @@ function setupEventListeners() {
     checkoutModalOverlay.addEventListener("click", closeCheckoutModal);
   }
 
-  // Handle Form Submission (WhatsApp checkout)
+  // Handle Form Submission (WhatsApp checkout + Invoice generation)
   if (checkoutForm) {
     checkoutForm.addEventListener("submit", handleCheckout);
   }
@@ -157,6 +163,26 @@ function setupEventListeners() {
   }
   if (productModalOverlay) {
     productModalOverlay.addEventListener("click", closeProductModal);
+  }
+
+  // Close Invoice Modal (Clears cart and resets layout)
+  if (closeInvoiceModalBtn) {
+    closeInvoiceModalBtn.addEventListener("click", () => {
+      closeInvoiceModal();
+      clearCartAndReset();
+    });
+  }
+  if (invoiceModalOverlay) {
+    invoiceModalOverlay.addEventListener("click", () => {
+      closeInvoiceModal();
+      clearCartAndReset();
+    });
+  }
+  if (invoiceDoneBtn) {
+    invoiceDoneBtn.addEventListener("click", () => {
+      closeInvoiceModal();
+      clearCartAndReset();
+    });
   }
 }
 
@@ -218,6 +244,15 @@ function removeFromCart(productId) {
   cart = cart.filter(item => item.id !== productId);
   saveCartToLocalStorage();
   updateCartUI();
+}
+
+function clearCartAndReset() {
+  cart = [];
+  saveCartToLocalStorage();
+  updateCartUI();
+  if (checkoutForm) {
+    checkoutForm.reset();
+  }
 }
 
 // Drawer Open / Close Functions
@@ -424,6 +459,35 @@ function closeCheckoutModal() {
   }
 }
 
+// Invoice Modal triggers
+function openInvoiceModal() {
+  if (invoiceModal) {
+    invoiceModal.style.display = "block";
+    invoiceModal.offsetHeight;
+    invoiceModal.classList.add("visible");
+  }
+  if (invoiceModalOverlay) {
+    invoiceModalOverlay.style.display = "block";
+    invoiceModalOverlay.offsetHeight;
+    invoiceModalOverlay.classList.add("visible");
+  }
+}
+
+function closeInvoiceModal() {
+  if (invoiceModal) {
+    invoiceModal.classList.remove("visible");
+    setTimeout(() => {
+      invoiceModal.style.display = "none";
+    }, 350);
+  }
+  if (invoiceModalOverlay) {
+    invoiceModalOverlay.classList.remove("visible");
+    setTimeout(() => {
+      invoiceModalOverlay.style.display = "none";
+    }, 350);
+  }
+}
+
 // Generate the text order summary
 function generateOrderText() {
   let subtotal = 0;
@@ -456,7 +520,7 @@ function copyOrderSummary() {
     });
 }
 
-// Handle Checkout Submission (Form Validation & Redirection to WhatsApp)
+// Handle Checkout Submission (Form Validation & Redirection to WhatsApp + Invoice Generation)
 function handleCheckout(e) {
   e.preventDefault();
   
@@ -470,9 +534,58 @@ function handleCheckout(e) {
     alert("Veuillez remplir tous les champs obligatoires (*)");
     return;
   }
-  
-  // Format WhatsApp message text
-  let messageText = `✨ *NOUVELLE COMMANDE - MAISON OF WISHES* ✨\n\n`;
+
+  // 1. Generate Invoice Identifiers
+  const invoiceNum = "MW-" + Math.floor(1000 + Math.random() * 9000);
+  const today = new Date().toLocaleDateString('fr-FR');
+
+  // 2. Populate Invoice DOM
+  const invoiceIdEl = document.getElementById("invoice-id");
+  const invoiceDateEl = document.getElementById("invoice-date");
+  const clientNameEl = document.getElementById("invoice-client-name");
+  const clientPhoneEl = document.getElementById("invoice-client-phone");
+  const clientCityEl = document.getElementById("invoice-client-city");
+  const clientAddressEl = document.getElementById("invoice-client-address");
+  const tableBodyEl = document.getElementById("invoice-table-body");
+  const subtotalEl = document.getElementById("invoice-subtotal");
+  const grandTotalEl = document.getElementById("invoice-grand-total");
+
+  if (invoiceIdEl) invoiceIdEl.textContent = `#${invoiceNum}`;
+  if (invoiceDateEl) invoiceDateEl.textContent = today;
+  if (clientNameEl) clientNameEl.textContent = name;
+  if (clientPhoneEl) clientPhoneEl.textContent = phone;
+  if (clientCityEl) clientCityEl.textContent = city;
+  if (clientAddressEl) clientAddressEl.textContent = address;
+
+  // 3. Render Invoice Table Items
+  let subtotal = 0;
+  const invoiceRowsHTML = cart.map(item => {
+    const product = products.find(p => p.id === item.id);
+    if (!product) return "";
+    
+    const itemTotal = product.price * item.quantity;
+    subtotal += itemTotal;
+    
+    return `
+      <tr>
+        <td>
+          <strong>${product.name}</strong><br>
+          <span style="font-size: 0.75rem; color: #718096;">Code: MW-00${product.id} | Dims: ${product.dimensions || "Unique"}</span>
+        </td>
+        <td class="text-center">${item.quantity}</td>
+        <td class="text-right">${product.price}.00 DT</td>
+        <td class="text-right">${itemTotal}.00 DT</td>
+      </tr>
+    `;
+  }).join("");
+
+  if (tableBodyEl) tableBodyEl.innerHTML = invoiceRowsHTML;
+  if (subtotalEl) subtotalEl.textContent = `${subtotal}.00 DT`;
+  if (grandTotalEl) grandTotalEl.textContent = `${subtotal}.00 DT`;
+
+  // 4. Format WhatsApp Message Text
+  let messageText = `✨ *NOUVELLE COMMANDE - MAISON OF WISHES* ✨\n`;
+  messageText += `*Facture N° :* #${invoiceNum}\n\n`;
   messageText += `👤 *Informations Client :*\n`;
   messageText += `• *Nom :* ${name}\n`;
   messageText += `• *Téléphone :* ${phone}\n`;
@@ -482,8 +595,6 @@ function handleCheckout(e) {
     messageText += `• *Note spéciale :* ${notes}\n`;
   }
   messageText += `\n🛒 *Détails de la commande :*\n`;
-  
-  const { subtotal } = generateOrderText();
   
   cart.forEach(item => {
     const product = products.find(p => p.id === item.id);
@@ -510,15 +621,10 @@ function handleCheckout(e) {
   // Open WhatsApp in new window/tab
   window.open(whatsappUrl, "_blank");
   
-  // Clear Cart and UI
-  cart = [];
-  saveCartToLocalStorage();
-  updateCartUI();
+  // Close Checkout Modal & Open Invoice Modal
   closeCheckoutModal();
   closeCart();
+  openInvoiceModal();
   
-  // Reset form
-  checkoutForm.reset();
-  
-  alert("Merci pour votre commande ! Vous allez être redirigé vers WhatsApp pour l'envoyer et finaliser avec nous.");
+  alert("Merci pour votre commande ! Votre résumé va s'ouvrir sur WhatsApp, et votre facture a été générée. Vous pouvez l'imprimer ou l'enregistrer en PDF.");
 }

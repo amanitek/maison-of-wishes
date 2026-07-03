@@ -241,6 +241,100 @@
   </div>
   <div class="modal-overlay" id="checkout-modal-overlay"></div>
 
+  <!-- Invoice Modal -->
+  <div class="modal" id="invoice-modal">
+    <div class="modal-content invoice-modal-content" style="max-width: 650px; padding: 0; background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 50px rgba(0,0,0,0.15);">
+      <button class="close-modal-btn no-print" id="close-invoice-modal-btn" aria-label="Fermer le modal">&times;</button>
+      
+      <!-- Invoice Printable Sheet -->
+      <div class="invoice-sheet" id="invoice-sheet">
+        <!-- Brand Header -->
+        <div class="invoice-header">
+          <div class="invoice-logo-area">
+            <img src="assets/logo.png" alt="Maison of Wishes" class="invoice-logo">
+            <div>
+              <h3>Maison of Wishes</h3>
+              <p>by ACH</p>
+            </div>
+          </div>
+          <div class="invoice-meta">
+            <h2>FACTURE</h2>
+            <p><strong>N° Facture :</strong> <span id="invoice-id">#MW-1001</span></p>
+            <p><strong>Date :</strong> <span id="invoice-date">03/07/2026</span></p>
+          </div>
+        </div>
+        
+        <hr class="invoice-divider">
+        
+        <!-- Client Details -->
+        <div class="invoice-details-grid">
+          <div>
+            <h4>Destinataire :</h4>
+            <p><strong>Nom :</strong> <span id="invoice-client-name">-</span></p>
+            <p><strong>Tél :</strong> <span id="invoice-client-phone">-</span></p>
+            <p><strong>Gouvernorat :</strong> <span id="invoice-client-city">-</span></p>
+            <p><strong>Adresse :</strong> <span id="invoice-client-address">-</span></p>
+          </div>
+          <div>
+            <h4>Expéditeur :</h4>
+            <p><strong>Boutique :</strong> Maison of Wishes by ACH</p>
+            <p><strong>Contact :</strong> WhatsApp uniquement</p>
+            <p><strong>Pays :</strong> Tunisie 🇹🇳</p>
+          </div>
+        </div>
+        
+        <!-- Items Table -->
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th class="text-center">Qté</th>
+              <th class="text-right">Prix</th>
+              <th class="text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody id="invoice-table-body">
+            <!-- Dynamic Rows -->
+          </tbody>
+        </table>
+        
+        <!-- Summary -->
+        <div class="invoice-summary">
+          <div class="invoice-summary-row">
+            <span>Sous-total:</span>
+            <span id="invoice-subtotal">0 DT</span>
+          </div>
+          <div class="invoice-summary-row">
+            <span>Livraison:</span>
+            <span style="color: #25d366; font-weight: 500;">À confirmer</span>
+          </div>
+          <hr style="border: 0; border-top: 1px solid #edf2f7; margin: 10px 0;">
+          <div class="invoice-summary-row grand-total">
+            <span>Total Général:</span>
+            <span id="invoice-grand-total" style="color: var(--terracotta);">0 DT</span>
+          </div>
+        </div>
+        
+        <!-- Invoice Footer Note -->
+        <div class="invoice-footer-note">
+          <p>Merci pour votre commande ! Les détails de livraison seront confirmés par message WhatsApp.</p>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="invoice-actions no-print">
+        <button class="invoice-action-btn print-btn" onclick="window.print()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;"><path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/></svg>
+          Imprimer / Enregistrer en PDF
+        </button>
+        <button class="invoice-action-btn close-btn" id="invoice-done-btn">
+          Terminer
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="invoice-modal-overlay"></div>
+
   <!-- Footer -->
   <footer id="main-footer">
     <div class="footer-content">
