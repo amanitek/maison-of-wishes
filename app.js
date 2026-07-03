@@ -60,7 +60,7 @@ const products = [
 
 // Formspree Form ID - For receiving orders directly in your email inbox (maisonofwishes@gmail.com)
 // Get your free ID at https://formspree.io/
-const FORMSPREE_FORM_ID = "YOUR_FORMSPREE_ID"; // Ex: "xpznqyzd"
+const FORMSPREE_FORM_ID = "mgojrzdn"; // Ex: "xpznqyzd"
 
 // Cart State
 let cart = [];
