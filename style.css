@@ -1396,10 +1396,12 @@ footer {
   max-width: 650px;
   background: white;
   border-radius: 18px;
-  overflow: hidden;
   box-shadow: 0 10px 50px rgba(0,0,0,0.15);
   border: 1px solid rgba(0, 0, 0, 0.08);
   margin: auto;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
 /* Print styles for Invoice */

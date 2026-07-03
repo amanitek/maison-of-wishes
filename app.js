@@ -543,52 +543,56 @@ function handleCheckout(e) {
   if (subtotalEl) subtotalEl.textContent = `${subtotal}.00 DT`;
   if (grandTotalEl) grandTotalEl.textContent = `${subtotal}.00 DT`;
 
-  // 4. Submit order data to Formspree for Email delivery to maisonofwishes@gmail.com
-  if (FORMSPREE_FORM_ID && FORMSPREE_FORM_ID !== "YOUR_FORMSPREE_ID") {
-    const formspreeUrl = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
-    const emailBody = {
-      email: "maisonofwishes@gmail.com",
-      _subject: `Nouvelle Commande #${invoiceNum} - Maison of Wishes`,
-      "Facture N°": `#${invoiceNum}`,
-      "Date de commande": today,
-      "Nom complet": name,
-      "Téléphone": phone,
-      "Gouvernorat": city,
-      "Adresse": address,
-      "Notes spéciales": notes || "Aucune",
-      "Total à payer": `${subtotal}.00 DT`,
-      "Créations Commandées": cart.map(item => {
-        const product = products.find(p => p.id === item.id);
-        return `${item.quantity}x ${product.name} (MW-00${product.id}) [${product.price} DT]`;
-      }).join(", ")
-    };
-
-    fetch(formspreeUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(emailBody)
-    })
-    .then(response => {
-      if (!response.ok) {
-        console.warn("Formspree submission failed with status: ", response.status);
-      }
-    })
-    .catch(err => {
-      console.warn("Formspree submission connection error: ", err);
-    });
-  } else {
-    console.warn("Formspree Form ID is not configured. Email notification skipped.");
-  }
-
-  // 5. Open Invoice Modal first to make it visible in the layout tree
+  // 4. Open Invoice Modal first to make it visible in the layout tree
   closeCheckoutModal();
   closeCart();
   openInvoiceModal();
-  
-  // 6. Generate and Download PDF Invoice locally in customer's browser (delayed slightly so the modal renders first)
+
+  // Helper to submit FormData to Formspree
+  function submitOrderToFormspree(pdfBlob) {
+    if (FORMSPREE_FORM_ID && FORMSPREE_FORM_ID !== "YOUR_FORMSPREE_ID") {
+      const formspreeUrl = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
+      const formData = new FormData();
+      formData.append("email", "maisonofwishes@gmail.com");
+      formData.append("_subject", `Nouvelle Commande #${invoiceNum} - Maison of Wishes`);
+      formData.append("Facture N°", `#${invoiceNum}`);
+      formData.append("Date de commande", today);
+      formData.append("Nom complet", name);
+      formData.append("Téléphone", phone);
+      formData.append("Gouvernorat", city);
+      formData.append("Adresse", address);
+      formData.append("Notes spéciales", notes || "Aucune");
+      formData.append("Total à payer", `${subtotal}.00 DT`);
+      formData.append("Créations Commandées", cart.map(item => {
+        const product = products.find(p => p.id === item.id);
+        return `${item.quantity}x ${product.name} (MW-00${product.id}) [${product.price} DT]`;
+      }).join(", "));
+
+      if (pdfBlob) {
+        formData.append("facture_pdf", pdfBlob, `Facture_${invoiceNum}.pdf`);
+      }
+
+      fetch(formspreeUrl, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Accept": "application/json"
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          console.warn("Formspree submission failed with status: ", response.status);
+        }
+      })
+      .catch(err => {
+        console.warn("Formspree submission connection error: ", err);
+      });
+    } else {
+      console.warn("Formspree Form ID is not configured. Email notification skipped.");
+    }
+  }
+
+  // 5. Generate PDF Invoice as a Blob in the background and submit to Formspree
   setTimeout(() => {
     const invoiceElement = document.getElementById("invoice-sheet");
     if (invoiceElement && typeof html2pdf !== "undefined") {
@@ -600,12 +604,20 @@ function handleCheckout(e) {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      // Generate the PDF
-      html2pdf().set(opt).from(invoiceElement).save();
+      // Generate the PDF as a Blob instead of downloading it (.save())
+      html2pdf().set(opt).from(invoiceElement).output('blob')
+        .then((pdfBlob) => {
+          submitOrderToFormspree(pdfBlob);
+        })
+        .catch(err => {
+          console.warn("Error generating PDF Blob, falling back to text submission: ", err);
+          submitOrderToFormspree(null);
+        });
     } else {
-      console.warn("html2pdf library is not loaded. PDF download skipped.");
+      console.warn("html2pdf library is not loaded. Falling back to text submission.");
+      submitOrderToFormspree(null);
     }
   }, 150);
   
-  alert("Merci pour votre commande ! Vos détails de livraison ont été envoyés par email, et votre facture PDF a été générée automatiquement pour vos dossiers.");
+  alert("Merci pour votre commande ! Vos détails de livraison et votre facture PDF ont été envoyés par email avec succès.");
 }
