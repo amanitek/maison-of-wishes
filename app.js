@@ -58,8 +58,6 @@ const products = [
   }
 ];
 
-
-
 // Formspree Form ID - For receiving orders directly in your email inbox (maisonofwishes@gmail.com)
 // Get your free ID at https://formspree.io/
 const FORMSPREE_FORM_ID = "YOUR_FORMSPREE_ID"; // Ex: "xpznqyzd"
@@ -81,7 +79,6 @@ const cartGrandTotalDisplay = document.getElementById("cart-grand-total-display"
 const cartFooterArea = document.getElementById("cart-footer-area");
 const emptyCartState = document.getElementById("empty-cart-state");
 const checkoutTriggerBtn = document.getElementById("checkout-trigger-btn");
-const copySummaryBtn = document.getElementById("copy-summary-btn");
 
 // Toast Container
 const toastContainer = document.getElementById("toast-container");
@@ -138,14 +135,6 @@ function setupEventListeners() {
     });
   }
 
-  // Copy Order Summary
-  if (copySummaryBtn) {
-    copySummaryBtn.addEventListener("click", () => {
-      if (cart.length === 0) return;
-      copyOrderSummary();
-    });
-  }
-
   // Close Checkout Modal
   if (closeCheckoutModalBtn) {
     closeCheckoutModalBtn.addEventListener("click", closeCheckoutModal);
@@ -154,7 +143,7 @@ function setupEventListeners() {
     checkoutModalOverlay.addEventListener("click", closeCheckoutModal);
   }
 
-  // Handle Form Submission (WhatsApp checkout + Invoice generation)
+  // Handle Form Submission (Email order + Invoice generation)
   if (checkoutForm) {
     checkoutForm.addEventListener("submit", handleCheckout);
   }
@@ -446,6 +435,7 @@ function openCheckoutModal() {
   }
 }
 
+// Close Checkout Modal
 function closeCheckoutModal() {
   if (checkoutModal) {
     checkoutModal.classList.remove("visible");
@@ -490,39 +480,7 @@ function closeInvoiceModal() {
   }
 }
 
-// Generate the text order summary
-function generateOrderText() {
-  let subtotal = 0;
-  let orderDetails = "";
-  
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    if (product) {
-      const itemTotal = product.price * item.quantity;
-      subtotal += itemTotal;
-      orderDetails += `- ${item.quantity}x ${product.name} (Code: MW-00${product.id}) -> ${itemTotal} DT\n`;
-    }
-  });
-
-  let text = `✨ COMMANDE - MAISON OF WISHES ✨\n\n🛒 Détails de la commande :\n${orderDetails}\n💵 Total à payer : ${subtotal} DT\n_(Frais de livraison gérés séparément lors de la confirmation)_`;
-  return { text, subtotal };
-}
-
-// Copy order summary to clipboard helper
-function copyOrderSummary() {
-  const { text } = generateOrderText();
-  
-  navigator.clipboard.writeText(text)
-    .then(() => {
-      showToast("Résumé copié dans le presse-papiers ! 📋");
-    })
-    .catch(err => {
-      console.error("Could not copy order summary: ", err);
-      alert("Une erreur est survenue lors de la copie. Vous pouvez commander directement.");
-    });
-}
-
-// Handle Checkout Submission (Form Validation & Redirection to WhatsApp + Invoice Generation)
+// Handle Checkout Submission (Form Validation, Email Order Routing & Invoice Generation)
 function handleCheckout(e) {
   e.preventDefault();
   
@@ -585,53 +543,7 @@ function handleCheckout(e) {
   if (subtotalEl) subtotalEl.textContent = `${subtotal}.00 DT`;
   if (grandTotalEl) grandTotalEl.textContent = `${subtotal}.00 DT`;
 
-  // 4. Format WhatsApp Message Text as a clean Text Invoice (Facture Layout)
-  let messageText = `=============================\n`;
-  messageText += `🧾 *FACTURE DE COMMANDE #${invoiceNum}*\n`;
-  messageText += `*Maison of Wishes by ACH*\n`;
-  messageText += `=============================\n`;
-  messageText += `📅 *Date :* ${today}\n\n`;
-  
-  messageText += `👤 *INFORMATIONS CLIENT :*\n`;
-  messageText += `-----------------------------\n`;
-  messageText += `• *Nom :* ${name}\n`;
-  messageText += `• *Téléphone :* ${phone}\n`;
-  messageText += `• *Gouvernorat :* ${city}\n`;
-  messageText += `• *Adresse :* ${address}\n`;
-  if (notes) {
-    messageText += `• *Notes :* ${notes}\n`;
-  }
-  messageText += `\n`;
-  
-  messageText += `🛒 *DÉTAILS DES CRÉATIONS :*\n`;
-  messageText += `-----------------------------\n`;
-  
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    if (product) {
-      const itemTotal = product.price * item.quantity;
-      messageText += `• ${item.quantity}x *${product.name}* (MW-00${product.id}) -> *${itemTotal} DT*\n`;
-    }
-  });
-  
-  messageText += `-----------------------------\n`;
-  messageText += `💵 *TOTAL :* *${subtotal}.00 DT*\n`;
-  messageText += `🚚 *Frais de livraison :* _À confirmer_\n`;
-  messageText += `=============================\n`;
-  messageText += `*Merci pour votre commande ! 🌸*`;
-  
-  // URL Encode
-  const encodedText = encodeURIComponent(messageText);
-  
-  // Target URL
-  let whatsappUrl = "";
-  if (SELLER_WHATSAPP_NUMBER === "YOUR_PHONE_NUMBER" || !SELLER_WHATSAPP_NUMBER) {
-    whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
-  } else {
-    whatsappUrl = `https://api.whatsapp.com/send?phone=${SELLER_WHATSAPP_NUMBER}&text=${encodedText}`;
-  }
-  
-  // 5. Submit order data to Formspree for Email delivery to maisonofwishes@gmail.com
+  // 4. Submit order data to Formspree for Email delivery to maisonofwishes@gmail.com
   if (FORMSPREE_FORM_ID && FORMSPREE_FORM_ID !== "YOUR_FORMSPREE_ID") {
     const formspreeUrl = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
     const emailBody = {
@@ -671,7 +583,7 @@ function handleCheckout(e) {
     console.warn("Formspree Form ID is not configured. Email notification skipped.");
   }
 
-  // 6. Generate and Download PDF Invoice locally in customer's browser
+  // 5. Generate and Download PDF Invoice locally in customer's browser
   const invoiceElement = document.getElementById("invoice-sheet");
   if (invoiceElement && typeof html2pdf !== "undefined") {
     const opt = {
@@ -688,13 +600,10 @@ function handleCheckout(e) {
     console.warn("html2pdf library is not loaded. PDF download skipped.");
   }
 
-  // Open WhatsApp in new window/tab
-  window.open(whatsappUrl, "_blank");
-  
   // Close Checkout Modal & Open Invoice Modal
   closeCheckoutModal();
   closeCart();
   openInvoiceModal();
   
-  alert("Merci pour votre commande ! Votre résumé va s'ouvrir sur WhatsApp, et votre facture PDF a été générée automatiquement pour vos dossiers.");
+  alert("Merci pour votre commande ! Vos détails de livraison ont été envoyés par email, et votre facture PDF a été générée automatiquement pour vos dossiers.");
 }

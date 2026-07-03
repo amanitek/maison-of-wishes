@@ -666,7 +666,7 @@ header {
 
 .checkout-btn {
   width: 100%;
-  background: #25d366; /* WhatsApp Green */
+  background: var(--terracotta);
   color: white;
   border: none;
   padding: 14px;
@@ -680,38 +680,13 @@ header {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+  box-shadow: 0 4px 12px rgba(223, 156, 150, 0.25);
 }
 
 .checkout-btn:hover {
-  background: #20ba59;
+  background: var(--terracotta-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
-}
-
-.copy-summary-btn {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.04);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 14px;
-  border-radius: 14px;
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.copy-summary-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(223, 156, 150, 0.35);
 }
 
 /* Checkout Form Modal Section */
@@ -767,7 +742,7 @@ header {
 }
 
 .place-order-btn {
-  background: #25d366; /* WhatsApp Green */
+  background: var(--terracotta);
   color: white;
   border: none;
   padding: 15px;
@@ -776,7 +751,7 @@ header {
   font-weight: 600;
   font-size: 1.05rem;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+  box-shadow: 0 4px 15px rgba(223, 156, 150, 0.3);
   transition: all 0.3s;
   display: flex;
   align-items: center;
@@ -786,9 +761,9 @@ header {
 }
 
 .place-order-btn:hover {
-  background: #20ba59;
+  background: var(--terracotta-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 6px 20px rgba(223, 156, 150, 0.4);
 }
 
 /* Cart Overlay Back-shadow */
