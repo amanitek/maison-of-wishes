@@ -5,35 +5,56 @@ const products = [
     name: "Plateau Banane & Porte-Bougie",
     price: 10,
     image: "assets/banana-holder.png",
-    desc: "Un charmant vide-poche en argile modelé à la main, décoré de délicates fleurs peintes, avec une sculpture de banane et un porte-bougie."
+    desc: "Un charmant vide-poche en argile modelé à la main, décoré de délicates fleurs peintes, avec une sculpture de banane et un porte-bougie.",
+    dimensions: "Base ø 13cm, Hauteur 5cm"
   },
   {
     id: 2,
     name: 'Porte-Carte Enveloppe "Maison of Wishes"',
     price: 10,
     image: "assets/wishes-envelope.jpg",
-    desc: "Notre enveloppe signature en argile blanche avec un cœur rouge sculpté façon sceau de cire. Parfait pour vos cartes, photos ou vœux."
+    desc: "Notre enveloppe signature en argile blanche avec un cœur rouge sculpté façon sceau de cire. Parfait pour vos cartes, photos ou vœux.",
+    dimensions: "10.5cm x 7.5cm x 3cm"
   },
   {
     id: 3,
     name: 'Coupe Ondulée "Starry Midnight"',
     price: 10,
     image: "assets/black-wavy-tray.jpg",
-    desc: "Un élégant plateau ondulé au fini noir brillant, orné de mini-fleurs peintes à la main, de cœurs et de nœuds rappelant une nuit étoilée."
+    desc: "Un élégant plateau ondulé au fini noir brillant, orné de mini-fleurs peintes à la main, de cœurs et de nœuds rappelant une nuit étoilée.",
+    dimensions: "18cm x 11cm"
   },
   {
     id: 4,
     name: "Plateau Citron d'Amalfi",
     price: 10,
     image: "assets/lemon-wavy-tray.jpg",
-    desc: "Apportez une touche de soleil méditerranéen à votre intérieur avec ce plateau ondulé blanc et bleu cobalt orné d'un citron central."
+    desc: "Apportez une touche de soleil méditerranéen à votre intérieur avec ce plateau ondulé blanc et bleu cobalt orné d'un citron central.",
+    dimensions: "13cm x 13cm"
   },
   {
     id: 5,
     name: 'Plateau Ondulé "Coquette Bow"',
     price: 10,
     image: "assets/pink-bow-tray.jpg",
-    desc: "Un plateau ultra féminin en argile rose poudré vernie, orné d'un magnifique nœud en relief rouge et de petites fleurs blanches."
+    desc: "Un plateau ultra féminin en argile rose poudré vernie, orné d'un magnifique nœud en relief rouge et de petites fleurs blanches.",
+    dimensions: "15cm x 14cm"
+  },
+  {
+    id: 6,
+    name: "Porte-Encens Vague Fleurie",
+    price: 10,
+    image: "assets/incense-holders.jpg",
+    desc: "Un magnifique porte-encens en forme de vague ondulée modelé à la main, orné de jolis motifs floraux peints et de petites touches dorées étincelantes. Disponible en Rose fuchsia ou Gris sauge.",
+    dimensions: "14cm x 4.5cm"
+  },
+  {
+    id: 7,
+    name: "Bougeoir Tasse Rétro",
+    price: 10,
+    image: "assets/cup-candle-holders.jpg",
+    desc: "Un adorable bougeoir de chambre rétro avec sa petite anse ronde pratique. Disponible en Jaune moucheté vitaminé ou en bicolore Orange & Bleu fleuri.",
+    dimensions: "Base ø 9cm, Hauteur 5cm"
   }
 ];
 
@@ -59,6 +80,20 @@ const emptyCartState = document.getElementById("empty-cart-state");
 const checkoutTriggerBtn = document.getElementById("checkout-trigger-btn");
 const checkoutFormSection = document.getElementById("checkout-form-section");
 const checkoutForm = document.getElementById("order-checkout-form");
+
+// Toast Container
+const toastContainer = document.getElementById("toast-container");
+
+// Product Modal DOM Elements
+const productDetailModal = document.getElementById("product-detail-modal");
+const productModalOverlay = document.getElementById("product-modal-overlay");
+const closeProductModalBtn = document.getElementById("close-product-modal-btn");
+const modalProductImg = document.getElementById("modal-product-img");
+const modalProductTitle = document.getElementById("modal-product-title");
+const modalProductPrice = document.getElementById("modal-product-price");
+const modalProductDesc = document.getElementById("modal-product-desc");
+const modalProductDims = document.getElementById("modal-product-dims");
+const modalAddToCartBtn = document.getElementById("modal-add-to-cart-btn");
 
 // Initialize App
 document.addEventListener("DOMContentLoaded", () => {
@@ -94,6 +129,14 @@ function setupEventListeners() {
 
   // Handle Form Submission (WhatsApp checkout)
   checkoutForm.addEventListener("submit", handleCheckout);
+
+  // Close Product Details Modal
+  if (closeProductModalBtn) {
+    closeProductModalBtn.addEventListener("click", closeProductModal);
+  }
+  if (productModalOverlay) {
+    productModalOverlay.addEventListener("click", closeProductModal);
+  }
 }
 
 // Render Shop Products Grid
@@ -101,7 +144,7 @@ function renderProducts() {
   if (!productsGrid) return;
   
   productsGrid.innerHTML = products.map(product => `
-    <article class="product-card" id="product-${product.id}">
+    <article class="product-card" id="product-${product.id}" onclick="openProductModal(${product.id})">
       <div class="product-img-wrapper">
         <img class="product-img" src="${product.image}" alt="${product.name}" loading="lazy">
         <span class="price-tag">${product.price} DT</span>
@@ -109,7 +152,7 @@ function renderProducts() {
       <div class="product-info">
         <h3 class="product-title">${product.name}</h3>
         <p class="product-desc">${product.desc}</p>
-        <button class="add-to-cart-btn" id="add-to-cart-${product.id}" onclick="addToCart(${product.id})">
+        <button class="add-to-cart-btn" id="add-to-cart-${product.id}" onclick="event.stopPropagation(); addToCart(${product.id})">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
           Ajouter au panier
         </button>
@@ -120,6 +163,9 @@ function renderProducts() {
 
 // Cart Logic Actions
 window.addToCart = function(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+
   const existingItemIndex = cart.findIndex(item => item.id === productId);
   
   if (existingItemIndex > -1) {
@@ -130,7 +176,7 @@ window.addToCart = function(productId) {
   
   saveCartToLocalStorage();
   updateCartUI();
-  openCart();
+  showToast(`"${product.name}" ajouté au panier ! 🌸`);
 };
 
 function updateQuantity(productId, delta) {
@@ -248,6 +294,81 @@ window.changeQty = function(id, delta) {
 
 window.deleteItem = function(id) {
   removeFromCart(id);
+};
+
+// Toast notification helper
+function showToast(message) {
+  if (!toastContainer) return;
+  
+  const toast = document.createElement("div");
+  toast.className = "toast-item";
+  toast.innerHTML = `<span>🌸</span> ${message}`;
+  
+  toastContainer.appendChild(toast);
+  
+  // Automatically remove toast after fade-out animation completes
+  setTimeout(() => {
+    toast.remove();
+  }, 3100);
+}
+
+// Product detail modal handlers
+window.openProductModal = function(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+  
+  if (modalProductImg) {
+    modalProductImg.src = product.image;
+    modalProductImg.alt = product.name;
+  }
+  if (modalProductTitle) {
+    modalProductTitle.textContent = product.name;
+  }
+  if (modalProductPrice) {
+    modalProductPrice.textContent = `${product.price} DT`;
+  }
+  if (modalProductDesc) {
+    modalProductDesc.textContent = product.desc;
+  }
+  if (modalProductDims) {
+    modalProductDims.textContent = product.dimensions || "N/A";
+  }
+  
+  // Configure the Add to Cart button inside the modal
+  if (modalAddToCartBtn) {
+    modalAddToCartBtn.onclick = () => {
+      addToCart(productId);
+      closeProductModal();
+    };
+  }
+  
+  if (productDetailModal) {
+    productDetailModal.style.display = "block";
+    // Trigger reflow to run CSS transitions
+    productDetailModal.offsetHeight;
+    productDetailModal.classList.add("visible");
+  }
+  
+  if (productModalOverlay) {
+    productModalOverlay.style.display = "block";
+    productModalOverlay.offsetHeight;
+    productModalOverlay.classList.add("visible");
+  }
+};
+
+window.closeProductModal = function() {
+  if (productDetailModal) {
+    productDetailModal.classList.remove("visible");
+    setTimeout(() => {
+      productDetailModal.style.display = "none";
+    }, 350);
+  }
+  if (productModalOverlay) {
+    productModalOverlay.classList.remove("visible");
+    setTimeout(() => {
+      productModalOverlay.style.display = "none";
+    }, 350);
+  }
 };
 
 // Handle Checkout Submission (Form Validation & Redirection to WhatsApp)

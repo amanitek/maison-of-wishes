@@ -19,6 +19,9 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 </head>
 <body>
+  
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
 
   <!-- Navigation Bar -->
   <header id="main-header">
@@ -189,6 +192,35 @@
   
   <!-- Overlay Backdrop -->
   <div class="cart-overlay" id="cart-overlay-bg"></div>
+
+  <!-- Product Detail Modal -->
+  <div class="modal" id="product-detail-modal">
+    <div class="modal-content">
+      <button class="close-modal-btn" id="close-product-modal-btn" aria-label="Fermer le modal">&times;</button>
+      <div class="modal-body">
+        <div class="modal-img-wrapper">
+          <img id="modal-product-img" src="" alt="">
+        </div>
+        <div class="modal-info">
+          <h2 id="modal-product-title"></h2>
+          <span id="modal-product-price">10 DT</span>
+          <p id="modal-product-desc"></p>
+          <div class="modal-product-details">
+            <div class="detail-row">
+              <span class="detail-label">Dimensions :</span>
+              <span id="modal-product-dims"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Entretien :</span>
+              <span id="modal-product-care">Verni, nettoyer avec un chiffon sec. Ne pas immerger.</span>
+            </div>
+          </div>
+          <button class="modal-add-to-cart-btn" id="modal-add-to-cart-btn">Ajouter au panier</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="product-modal-overlay"></div>
 
   <!-- Footer -->
   <footer id="main-footer">
