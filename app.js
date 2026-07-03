@@ -75,11 +75,11 @@ const footerCartLink = document.getElementById("footer-cart-link");
 const cartItemsList = document.getElementById("cart-items-list");
 const cartCountBadge = document.getElementById("cart-count-badge");
 const cartTotalDisplay = document.getElementById("cart-total-display");
+const cartGrandTotalDisplay = document.getElementById("cart-grand-total-display");
 const cartFooterArea = document.getElementById("cart-footer-area");
 const emptyCartState = document.getElementById("empty-cart-state");
 const checkoutTriggerBtn = document.getElementById("checkout-trigger-btn");
-const checkoutFormSection = document.getElementById("checkout-form-section");
-const checkoutForm = document.getElementById("order-checkout-form");
+const copySummaryBtn = document.getElementById("copy-summary-btn");
 
 // Toast Container
 const toastContainer = document.getElementById("toast-container");
@@ -94,6 +94,12 @@ const modalProductPrice = document.getElementById("modal-product-price");
 const modalProductDesc = document.getElementById("modal-product-desc");
 const modalProductDims = document.getElementById("modal-product-dims");
 const modalAddToCartBtn = document.getElementById("modal-add-to-cart-btn");
+
+// Checkout Modal DOM Elements
+const checkoutModal = document.getElementById("checkout-modal");
+const checkoutModalOverlay = document.getElementById("checkout-modal-overlay");
+const closeCheckoutModalBtn = document.getElementById("close-checkout-modal-btn");
+const checkoutForm = document.getElementById("order-checkout-form");
 
 // Initialize App
 document.addEventListener("DOMContentLoaded", () => {
@@ -116,19 +122,34 @@ function setupEventListeners() {
     });
   }
 
-  // Show Checkout Form
-  checkoutTriggerBtn.addEventListener("click", () => {
-    checkoutFormSection.classList.toggle("visible");
-    if (checkoutFormSection.classList.contains("visible")) {
-      // Scroll form into view inside the drawer
-      setTimeout(() => {
-        checkoutFormSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
-    }
-  });
+  // Open Checkout Modal
+  if (checkoutTriggerBtn) {
+    checkoutTriggerBtn.addEventListener("click", () => {
+      if (cart.length === 0) return;
+      openCheckoutModal();
+    });
+  }
+
+  // Copy Order Summary
+  if (copySummaryBtn) {
+    copySummaryBtn.addEventListener("click", () => {
+      if (cart.length === 0) return;
+      copyOrderSummary();
+    });
+  }
+
+  // Close Checkout Modal
+  if (closeCheckoutModalBtn) {
+    closeCheckoutModalBtn.addEventListener("click", closeCheckoutModal);
+  }
+  if (checkoutModalOverlay) {
+    checkoutModalOverlay.addEventListener("click", closeCheckoutModal);
+  }
 
   // Handle Form Submission (WhatsApp checkout)
-  checkoutForm.addEventListener("submit", handleCheckout);
+  if (checkoutForm) {
+    checkoutForm.addEventListener("submit", handleCheckout);
+  }
 
   // Close Product Details Modal
   if (closeProductModalBtn) {
@@ -208,8 +229,6 @@ function openCart() {
 function closeCart() {
   cartDrawer.classList.remove("open");
   cartOverlay.classList.remove("visible");
-  // Hide checkout form when closing
-  checkoutFormSection.classList.remove("visible");
 }
 
 // LocalStorage helpers
@@ -257,24 +276,25 @@ function updateCartUI() {
     
     const itemTotal = product.price * cartItem.quantity;
     subtotal += itemTotal;
+    const productCode = `MW-00${product.id}`;
     
     return `
       <div class="cart-item" id="cart-item-${product.id}">
         <img class="cart-item-img" src="${product.image}" alt="${product.name}">
         <div class="cart-item-details">
+          <div class="cart-item-tag">MAISON OF WISHES</div>
           <h4 class="cart-item-title">${product.name}</h4>
-          <div class="cart-item-price">${product.price} DT</div>
+          <div class="cart-item-specs">Code: ${productCode} | Dims: ${product.dimensions || "Unique"}</div>
           <div class="cart-item-controls">
+            <div class="cart-item-price">${cartItem.quantity} × ${product.price}.00 DT</div>
             <div class="quantity-selector">
               <button class="quantity-btn" aria-label="Moins" onclick="changeQty(${product.id}, -1)">&minus;</button>
               <span class="quantity-display">${cartItem.quantity}</span>
               <button class="quantity-btn" aria-label="Plus" onclick="changeQty(${product.id}, 1)">&plus;</button>
             </div>
-            <button class="remove-item-btn" onclick="deleteItem(${product.id})">
-              Supprimer
-            </button>
           </div>
         </div>
+        <button class="cart-item-remove-icon" aria-label="Supprimer" onclick="deleteItem(${product.id})">&times;</button>
       </div>
     `;
   }).join("");
@@ -284,7 +304,12 @@ function updateCartUI() {
   existingItems.forEach(el => el.remove());
   cartItemsList.insertAdjacentHTML("beforeend", cartHTML);
   
-  cartTotalDisplay.textContent = `${subtotal} DT`;
+  if (cartTotalDisplay) {
+    cartTotalDisplay.textContent = `${subtotal} DT`;
+  }
+  if (cartGrandTotalDisplay) {
+    cartGrandTotalDisplay.textContent = `${subtotal} DT`;
+  }
 }
 
 // Global functions for inline onclick handlers in cart list
@@ -344,7 +369,6 @@ window.openProductModal = function(productId) {
   
   if (productDetailModal) {
     productDetailModal.style.display = "block";
-    // Trigger reflow to run CSS transitions
     productDetailModal.offsetHeight;
     productDetailModal.classList.add("visible");
   }
@@ -370,6 +394,67 @@ window.closeProductModal = function() {
     }, 350);
   }
 };
+
+// Checkout Modal triggers
+function openCheckoutModal() {
+  if (checkoutModal) {
+    checkoutModal.style.display = "block";
+    checkoutModal.offsetHeight;
+    checkoutModal.classList.add("visible");
+  }
+  if (checkoutModalOverlay) {
+    checkoutModalOverlay.style.display = "block";
+    checkoutModalOverlay.offsetHeight;
+    checkoutModalOverlay.classList.add("visible");
+  }
+}
+
+function closeCheckoutModal() {
+  if (checkoutModal) {
+    checkoutModal.classList.remove("visible");
+    setTimeout(() => {
+      checkoutModal.style.display = "none";
+    }, 350);
+  }
+  if (checkoutModalOverlay) {
+    checkoutModalOverlay.classList.remove("visible");
+    setTimeout(() => {
+      checkoutModalOverlay.style.display = "none";
+    }, 350);
+  }
+}
+
+// Generate the text order summary
+function generateOrderText() {
+  let subtotal = 0;
+  let orderDetails = "";
+  
+  cart.forEach(item => {
+    const product = products.find(p => p.id === item.id);
+    if (product) {
+      const itemTotal = product.price * item.quantity;
+      subtotal += itemTotal;
+      orderDetails += `- ${item.quantity}x ${product.name} (Code: MW-00${product.id}) -> ${itemTotal} DT\n`;
+    }
+  });
+
+  let text = `✨ COMMANDE - MAISON OF WISHES ✨\n\n🛒 Détails de la commande :\n${orderDetails}\n💵 Total à payer : ${subtotal} DT\n_(Frais de livraison gérés séparément lors de la confirmation)_`;
+  return { text, subtotal };
+}
+
+// Copy order summary to clipboard helper
+function copyOrderSummary() {
+  const { text } = generateOrderText();
+  
+  navigator.clipboard.writeText(text)
+    .then(() => {
+      showToast("Résumé copié dans le presse-papiers ! 📋");
+    })
+    .catch(err => {
+      console.error("Could not copy order summary: ", err);
+      alert("Une erreur est survenue lors de la copie. Vous pouvez commander directement.");
+    });
+}
 
 // Handle Checkout Submission (Form Validation & Redirection to WhatsApp)
 function handleCheckout(e) {
@@ -398,13 +483,13 @@ function handleCheckout(e) {
   }
   messageText += `\n🛒 *Détails de la commande :*\n`;
   
-  let subtotal = 0;
+  const { subtotal } = generateOrderText();
+  
   cart.forEach(item => {
     const product = products.find(p => p.id === item.id);
     if (product) {
       const itemTotal = product.price * item.quantity;
-      subtotal += itemTotal;
-      messageText += `- ${item.quantity}x *${product.name}* (${product.price} DT) -> ${itemTotal} DT\n`;
+      messageText += `- ${item.quantity}x *${product.name}* (MW-00${product.id}) -> ${itemTotal} DT\n`;
     }
   });
   
@@ -415,13 +500,10 @@ function handleCheckout(e) {
   const encodedText = encodeURIComponent(messageText);
   
   // Target URL
-  // If SELLER_WHATSAPP_NUMBER is placeholder, it uses general link, otherwise specific number
   let whatsappUrl = "";
   if (SELLER_WHATSAPP_NUMBER === "YOUR_PHONE_NUMBER" || !SELLER_WHATSAPP_NUMBER) {
-    // Falls back to direct sharing link if no number is configured yet
     whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
   } else {
-    // Sends to the specific phone number
     whatsappUrl = `https://api.whatsapp.com/send?phone=${SELLER_WHATSAPP_NUMBER}&text=${encodedText}`;
   }
   
@@ -432,6 +514,7 @@ function handleCheckout(e) {
   cart = [];
   saveCartToLocalStorage();
   updateCartUI();
+  closeCheckoutModal();
   closeCart();
   
   // Reset form
