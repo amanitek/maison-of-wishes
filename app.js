@@ -548,36 +548,34 @@ function handleCheckout(e) {
   closeCart();
   openInvoiceModal();
 
-  // Helper to submit FormData to Formspree
-  function submitOrderToFormspree(imageBlob) {
+  // Helper to submit JSON payload to Formspree (compatible with free plan)
+  function submitOrderToFormspree() {
     if (FORMSPREE_FORM_ID && FORMSPREE_FORM_ID !== "YOUR_FORMSPREE_ID") {
       const formspreeUrl = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
-      const formData = new FormData();
-      formData.append("email", "maisonofwishes@gmail.com");
-      formData.append("_subject", `Nouvelle Commande #${invoiceNum} - Maison of Wishes`);
-      formData.append("Facture N°", `#${invoiceNum}`);
-      formData.append("Date de commande", today);
-      formData.append("Nom complet", name);
-      formData.append("Téléphone", phone);
-      formData.append("Gouvernorat", city);
-      formData.append("Adresse", address);
-      formData.append("Notes spéciales", notes || "Aucune");
-      formData.append("Total à payer", `${subtotal}.00 DT`);
-      formData.append("Créations Commandées", cart.map(item => {
-        const product = products.find(p => p.id === item.id);
-        return `${item.quantity}x ${product.name} (MW-00${product.id}) [${product.price} DT]`;
-      }).join(", "));
-
-      if (imageBlob) {
-        formData.append("facture_image", imageBlob, `Facture_${invoiceNum}.png`);
-      }
+      const emailBody = {
+        email: "maisonofwishes@gmail.com",
+        _subject: `Nouvelle Commande #${invoiceNum} - Maison of Wishes`,
+        "Facture N°": `#${invoiceNum}`,
+        "Date de commande": today,
+        "Nom complet": name,
+        "Téléphone": phone,
+        "Gouvernorat": city,
+        "Adresse": address,
+        "Notes spéciales": notes || "Aucune",
+        "Total à payer": `${subtotal}.00 DT`,
+        "Créations Commandées": cart.map(item => {
+          const product = products.find(p => p.id === item.id);
+          return `${item.quantity}x ${product.name} (MW-00${product.id}) [${product.price} DT]`;
+        }).join(", ")
+      };
 
       fetch(formspreeUrl, {
         method: "POST",
-        body: formData,
         headers: {
+          "Content-Type": "application/json",
           "Accept": "application/json"
-        }
+        },
+        body: JSON.stringify(emailBody)
       })
       .then(response => {
         if (!response.ok) {
@@ -592,30 +590,10 @@ function handleCheckout(e) {
     }
   }
 
-  // 5. Generate PNG Invoice image in the background and submit to Formspree
+  // 5. Submit order details to Formspree (compatible with free plan)
   setTimeout(() => {
-    const invoiceElement = document.getElementById("invoice-sheet");
-    if (invoiceElement && typeof html2canvas !== "undefined") {
-      html2canvas(invoiceElement, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff"
-      })
-      .then((canvas) => {
-        canvas.toBlob((imageBlob) => {
-          submitOrderToFormspree(imageBlob);
-        }, "image/png");
-      })
-      .catch(err => {
-        console.warn("Error generating PNG image, falling back to text submission: ", err);
-        submitOrderToFormspree(null);
-      });
-    } else {
-      console.warn("html2canvas is not available. Falling back to text submission.");
-      submitOrderToFormspree(null);
-    }
+    submitOrderToFormspree();
   }, 150);
   
-  alert("Merci pour votre commande ! Vos détails de livraison et votre facture ont été envoyés par email avec succès.");
+  alert("Merci pour votre commande ! Vos détails de livraison ont été envoyés par email avec succès.");
 }
