@@ -58,9 +58,7 @@ const products = [
   }
 ];
 
-// WhatsApp Config - Placeholder for the user's phone number
-// Format: country code without + or 00. Example: '21650000000' for Tunisia
-const SELLER_WHATSAPP_NUMBER = "21629208687"; // Ex: "21650123456"
+
 
 // Cart State
 let cart = [];
