@@ -1366,6 +1366,38 @@ footer {
   border-color: #a0aec0;
 }
 
+/* Invoice Modal Overrides (Fixes double white card bug and page truncation) */
+#invoice-modal {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  max-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  overflow-y: auto !important;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 15px;
+}
+
+#invoice-modal.visible {
+  display: flex !important;
+}
+
+#invoice-modal .invoice-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 650px;
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 50px rgba(0,0,0,0.15);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  margin: auto;
+}
+
 /* Print styles for Invoice */
 @media print {
   body * {
