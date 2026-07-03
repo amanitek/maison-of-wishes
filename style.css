@@ -3,25 +3,27 @@
 
 :root {
   /* Color System */
-  --bg-color: #fdfaf6;
-  --text-dark: #2c221e;
-  --text-muted: #6e5e58;
+  --bg-color: #faf6f3;
+  --text-dark: #423730;
+  --text-muted: #75655d;
   --clay-base: #f0e6dc;
-  --clay-border: #ebdcd0;
+  --clay-border: #eae1d8;
   
-  /* Brand Accent Colors */
-  --terracotta: #d98a72;
-  --terracotta-hover: #c4735c;
-  --soft-pink: #f5d6cf;
-  --soft-yellow: #f6e3b4;
-  --soft-blue: #d4e2f0;
+  /* Brand Accent Colors (Matching the official logo vibe) */
+  --terracotta: #df9c96; /* Dusty Rose Pink */
+  --terracotta-hover: #cb837b; /* Deeper Dusty Rose */
+  --soft-pink: #f5e4e0; /* Very soft pastel blossom pink */
+  --soft-yellow: #f6ebd2; /* Soft watercolor warm yellow */
+  --soft-blue: #dbedf0; /* Soft sky blue */
+  --sage-green: #9ab097; /* Sage green from leaves */
+  --lavender: #e3dbec; /* Soft lavender purple */
   
   /* Shadows & Glassmorphism */
-  --clay-shadow-sm: 0 4px 12px rgba(179, 154, 144, 0.12);
-  --clay-shadow-md: 0 10px 25px rgba(179, 154, 144, 0.18);
-  --clay-shadow-lg: 0 20px 40px rgba(179, 154, 144, 0.25);
-  --inner-bevel: inset 2px 2px 5px rgba(255, 255, 255, 0.7), inset -2px -2px 5px rgba(179, 154, 144, 0.15);
-  --glass-bg: rgba(253, 250, 246, 0.85);
+  --clay-shadow-sm: 0 4px 12px rgba(130, 110, 100, 0.08);
+  --clay-shadow-md: 0 10px 25px rgba(130, 110, 100, 0.12);
+  --clay-shadow-lg: 0 20px 40px rgba(130, 110, 100, 0.18);
+  --inner-bevel: inset 2px 2px 5px rgba(255, 255, 255, 0.8), inset -2px -2px 5px rgba(130, 110, 100, 0.08);
+  --glass-bg: rgba(250, 246, 243, 0.85);
   
   /* Fonts */
   --font-serif: 'Playfair Display', serif;
@@ -169,7 +171,7 @@ header {
 .hero {
   padding: 160px 20px 100px;
   position: relative;
-  background: radial-gradient(circle at 10% 20%, rgba(246, 227, 180, 0.2) 0%, rgba(245, 214, 207, 0.2) 90%);
+  background: radial-gradient(circle at 10% 20%, rgba(246, 235, 210, 0.3) 0%, rgba(245, 228, 224, 0.3) 90%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -177,7 +179,7 @@ header {
 }
 
 .hero-tag {
-  background: rgba(217, 138, 114, 0.1);
+  background: rgba(223, 156, 150, 0.12);
   color: var(--terracotta);
   padding: 6px 16px;
   border-radius: 20px;
@@ -187,7 +189,7 @@ header {
   margin-bottom: 20px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border: 1px solid rgba(217, 138, 114, 0.2);
+  border: 1px solid rgba(223, 156, 150, 0.25);
 }
 
 .hero h1 {
@@ -215,7 +217,7 @@ header {
   font-weight: 600;
   font-size: 1.1rem;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(217, 138, 114, 0.4);
+  box-shadow: 0 6px 20px rgba(223, 156, 150, 0.4);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
   display: inline-block;
@@ -224,7 +226,7 @@ header {
 .hero-cta:hover {
   background: var(--terracotta-hover);
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 25px rgba(217, 138, 114, 0.5);
+  box-shadow: 0 8px 25px rgba(223, 156, 150, 0.5);
 }
 
 /* Organic Floating Shapes Background */
@@ -423,7 +425,7 @@ header {
   background: var(--terracotta);
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(217, 138, 114, 0.3);
+  box-shadow: 0 4px 15px rgba(223, 156, 150, 0.3);
 }
 
 /* Sidebar Cart Drawer (Panier) */
@@ -630,7 +632,7 @@ header {
   font-weight: 600;
   font-size: 1.05rem;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(217, 138, 114, 0.3);
+  box-shadow: 0 4px 15px rgba(223, 156, 150, 0.3);
   transition: all 0.3s;
   display: flex;
   align-items: center;
@@ -686,7 +688,7 @@ header {
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
   outline: none;
   border-color: var(--terracotta);
-  box-shadow: 0 0 0 3px rgba(217, 138, 114, 0.15);
+  box-shadow: 0 0 0 3px rgba(223, 156, 150, 0.15);
 }
 
 .form-note {
