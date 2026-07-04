@@ -64,3 +64,5 @@ Une fois que les fichiers sont poussés sur GitHub :
    - Cliquez sur **Save**.
 5. Attendez environ 1 à 2 minutes. GitHub va générer le lien de votre site (qui ressemblera à `https://amanitek.github.io/maison-of-wishes/`).
 6. Le lien apparaîtra en haut de la page des paramètres GitHub Pages une fois le déploiement terminé !
+
+<!-- Trigger deployment: retry due to GitHub Pages transient runner glitch -->
