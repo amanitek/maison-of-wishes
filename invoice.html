@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facture de Commande | Maison of Wishes by ACH</title>
+  
+  <style>
+    :root {
+      --terracotta: #df9c96;
+      --terracotta-hover: #d28881;
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-serif: 'Playfair Display', Georgia, Cambria, "Times New Roman", Times, serif;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+    body {
+      background-color: #f7fafc;
+      margin: 0;
+      padding: 40px 20px;
+      font-family: var(--font-sans);
+      color: #2d3748;
+    }
+
+    .invoice-container {
+      max-width: 750px;
+      background: white;
+      margin: 0 auto;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .invoice-sheet {
+      padding: 45px;
+    }
+
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 25px;
+    }
+
+    .invoice-logo-area {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .invoice-logo {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      border: 1px solid #e2e8f0;
+      object-fit: cover;
+    }
+
+    .invoice-logo-area h3 {
+      font-size: 1.3rem;
+      color: #1a202c;
+      margin: 0 0 2px 0;
+      font-family: var(--font-sans);
+      font-weight: 600;
+    }
+
+    .invoice-logo-area p {
+      font-size: 0.88rem;
+      font-family: var(--font-serif);
+      font-style: italic;
+      color: var(--terracotta);
+      margin: 0;
+    }
+
+    .invoice-meta h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1a202c;
+      letter-spacing: 0.05em;
+      margin: 0 0 10px 0;
+      text-align: right;
+    }
+
+    .invoice-meta p {
+      font-size: 0.85rem;
+      color: #4a5568;
+      text-align: right;
+      margin: 0 0 4px 0;
+    }
+
+    .invoice-divider {
+      border: 0;
+      border-top: 1px solid #e2e8f0;
+      margin: 25px 0;
+    }
+
+    .invoice-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 35px;
+    }
+
+    .invoice-details-grid h4 {
+      font-size: 0.95rem;
+      color: #1a202c;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin: 0 0 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 6px;
+    }
+
+    .invoice-details-grid p {
+      font-size: 0.88rem;
+      color: #4a5568;
+      margin: 0 0 6px 0;
+      line-height: 1.4;
+    }
+
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    .invoice-table th {
+      background: #f7fafc;
+      color: #4a5568;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .invoice-table td {
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      color: #4a5568;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .invoice-table th.text-center, .invoice-table td.text-center {
+      text-align: center;
+    }
+
+    .invoice-table th.text-right, .invoice-table td.text-right {
+      text-align: right;
+    }
+
+    .invoice-summary {
+      width: 100%;
+      max-width: 320px;
+      margin-left: auto;
+      margin-bottom: 40px;
+    }
+
+    .invoice-summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #4a5568;
+      margin-bottom: 8px;
+    }
+
+    .invoice-summary-row.grand-total {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1a202c;
+    }
+
+    .invoice-footer-note {
+      font-size: 0.8rem;
+      color: #718096;
+      text-align: center;
+      border-top: 1px solid #edf2f7;
+      padding-top: 20px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .invoice-actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 20px 45px;
+      background: #f7fafc;
+      border-top: 1px solid #edf2f7;
+    }
+
+    .invoice-action-btn {
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      box-shadow: 0 4px 15px rgba(223, 156, 150, 0.2);
+      background: var(--terracotta);
+      color: white;
+    }
+
+    .invoice-action-btn:hover {
+      background: var(--terracotta-hover);
+      transform: translateY(-1px);
+    }
+
+    @media print {
+      body {
+        background-color: white;
+        padding: 0;
+      }
+      .invoice-container {
+        box-shadow: none;
+        border: none;
+        max-width: 100%;
+      }
+      .invoice-actions {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="invoice-container">
+    <!-- Invoice Sheet -->
+    <div class="invoice-sheet" id="invoice-sheet">
+      <!-- Brand Header -->
+      <div class="invoice-header">
+        <div class="invoice-logo-area">
+          <img src="assets/logo.png" alt="Maison of Wishes" class="invoice-logo">
+          <div>
+            <h3>Maison of Wishes</h3>
+            <p>by ACH</p>
+          </div>
+        </div>
+        <div class="invoice-meta">
+          <h2>FACTURE</h2>
+          <p><strong>N° Facture :</strong> <span id="invoice-id">#MW-1001</span></p>
+          <p><strong>Date :</strong> <span id="invoice-date">-</span></p>
+        </div>
+      </div>
+      
+      <hr class="invoice-divider">
+      
+      <!-- Client Details -->
+      <div class="invoice-details-grid">
+        <div>
+          <h4>Destinataire :</h4>
+          <p><strong>Nom :</strong> <span id="invoice-client-name">-</span></p>
+          <p><strong>Tél :</strong> <span id="invoice-client-phone">-</span></p>
+          <p><strong>Gouvernorat :</strong> <span id="invoice-client-city">-</span></p>
+          <p><strong>Adresse :</strong> <span id="invoice-client-address">-</span></p>
+        </div>
+        <div>
+          <h4>Expéditeur :</h4>
+          <p><strong>Boutique :</strong> Maison of Wishes by ACH</p>
+          <p><strong>Contact :</strong> Site Web / Instagram</p>
+          <p><strong>Pays :</strong> Tunisie 🇹🇳</p>
+        </div>
+      </div>
+      
+      <!-- Items Table -->
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th class="text-center" style="width: 60px;">Qté</th>
+            <th class="text-right" style="width: 100px;">Prix</th>
+            <th class="text-right" style="width: 120px;">Total</th>
+          </tr>
+        </thead>
+        <tbody id="invoice-table-body">
+          <!-- Dynamic Rows -->
+        </tbody>
+      </table>
+      
+      <!-- Summary -->
+      <div class="invoice-summary">
+        <div class="invoice-summary-row">
+          <span>Sous-total:</span>
+          <span id="invoice-subtotal">0 DT</span>
+        </div>
+        <div class="invoice-summary-row">
+          <span>Livraison:</span>
+          <span style="color: #25d366; font-weight: 500;">À confirmer</span>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #edf2f7; margin: 10px 0;">
+        <div class="invoice-summary-row grand-total">
+          <span>Total Général:</span>
+          <span id="invoice-grand-total" style="color: var(--terracotta);">0 DT</span>
+        </div>
+      </div>
+      
+      <!-- Invoice Footer Note -->
+      <div class="invoice-footer-note">
+        <p>Merci pour votre confiance ! Pour toute question, contactez-nous sur Instagram @maison.of.wishes</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="invoice-actions">
+      <button class="invoice-action-btn" onclick="window.print()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;"><path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/></svg>
+        Imprimer / Enregistrer en PDF
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Parse URL parameters and populate fields
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      
+      const id = params.get("id") || "MW-xxxx";
+      const date = params.get("date") || new Date().toLocaleDateString('fr-FR');
+      const name = params.get("name") || "-";
+      const phone = params.get("phone") || "-";
+      const city = params.get("city") || "-";
+      const address = params.get("address") || "-";
+      const notes = params.get("notes") || "";
+      const itemsRaw = params.get("items") || "[]";
+
+      // Populate Meta & Customer
+      document.getElementById("invoice-id").textContent = "#" + id;
+      document.getElementById("invoice-date").textContent = date;
+      document.getElementById("invoice-client-name").textContent = name;
+      document.getElementById("invoice-client-phone").textContent = phone;
+      document.getElementById("invoice-client-city").textContent = city;
+      document.getElementById("invoice-client-address").textContent = address;
+
+      // Handle special notes if any
+      if (notes) {
+        const destDiv = document.getElementById("invoice-client-address").parentElement;
+        const notesPara = document.createElement("p");
+        notesPara.innerHTML = "<strong>Notes :</strong> " + notes;
+        destDiv.appendChild(notesPara);
+      }
+
+      // Populate Items Table
+      try {
+        const items = JSON.parse(itemsRaw);
+        const tableBody = document.getElementById("invoice-table-body");
+        let subtotal = 0;
+
+        const rowsHTML = items.map(item => {
+          const total = item.p * item.q;
+          subtotal += total;
+          return `
+            <tr>
+              <td>
+                <strong>${item.n}</strong><br>
+                <span style="font-size: 0.78rem; color: #718096;">Code: ${item.c} | Dims: ${item.d}</span>
+              </td>
+              <td class="text-center">${item.q}</td>
+              <td class="text-right">${item.p}.00 DT</td>
+              <td class="text-right">${total}.00 DT</td>
+            </tr>
+          `;
+        }).join("");
+
+        tableBody.innerHTML = rowsHTML;
+        document.getElementById("invoice-subtotal").textContent = subtotal + ".00 DT";
+        document.getElementById("invoice-grand-total").textContent = subtotal + ".00 DT";
+
+        // Auto trigger print menu for convenience after render
+        setTimeout(() => {
+          window.print();
+        }, 800);
+      } catch (e) {
+        console.error("Failed to parse invoice items: ", e);
+      }
+    });
+  </script>
+</body>
+</html>

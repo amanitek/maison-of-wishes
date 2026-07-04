@@ -552,9 +552,37 @@ function handleCheckout(e) {
   function submitOrderToFormspree() {
     if (FORMSPREE_FORM_ID && FORMSPREE_FORM_ID !== "YOUR_FORMSPREE_ID") {
       const formspreeUrl = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
+      
+      // Construct the dynamic invoice print link
+      const baseUrl = window.location.href.split("?")[0].split("index.html")[0];
+      const itemsData = cart.map(item => {
+        const product = products.find(p => p.id === item.id);
+        return {
+          q: item.quantity,
+          n: product.name,
+          p: product.price,
+          c: `MW-00${product.id}`,
+          d: product.dimensions || "Unique"
+        };
+      });
+      
+      const queryParams = new URLSearchParams({
+        id: invoiceNum,
+        date: today,
+        name: name,
+        phone: phone,
+        city: city,
+        address: address,
+        notes: notes || "",
+        items: JSON.stringify(itemsData)
+      });
+      
+      const invoiceLink = `${baseUrl}invoice.html?${queryParams.toString()}`;
+
       const emailBody = {
         email: "maisonofwishes@gmail.com",
         _subject: `Nouvelle Commande #${invoiceNum} - Maison of Wishes`,
+        "Lien de la Facture PDF": invoiceLink,
         "Facture N°": `#${invoiceNum}`,
         "Date de commande": today,
         "Nom complet": name,
