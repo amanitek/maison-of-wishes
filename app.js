@@ -6,7 +6,8 @@ const products = [
     price: 10,
     image: "assets/banana-holder.png",
     desc: "Un charmant vide-poche en argile modelé à la main, décoré de délicates fleurs peintes, avec une sculpture de banane et un porte-bougie.",
-    dimensions: "Base ø 13cm, Hauteur 5cm"
+    dimensions: "Base ø 13cm, Hauteur 5cm",
+    category: "trays"
   },
   {
     id: 2,
@@ -14,7 +15,8 @@ const products = [
     price: 10,
     image: "assets/wishes-envelope.jpg",
     desc: "Notre enveloppe signature en argile blanche avec un cœur rouge sculpté façon sceau de cire. Parfait pour vos cartes, photos ou vœux.",
-    dimensions: "10.5cm x 7.5cm x 3cm"
+    dimensions: "10.5cm x 7.5cm x 3cm",
+    category: "trays"
   },
   {
     id: 3,
@@ -22,7 +24,8 @@ const products = [
     price: 10,
     image: "assets/black-wavy-tray.jpg",
     desc: "Un élégant plateau ondulé au fini noir brillant, orné de mini-fleurs peintes à la main, de cœurs et de nœuds rappelant une nuit étoilée.",
-    dimensions: "18cm x 11cm"
+    dimensions: "18cm x 11cm",
+    category: "trays"
   },
   {
     id: 4,
@@ -30,7 +33,8 @@ const products = [
     price: 10,
     image: "assets/lemon-wavy-tray.jpg",
     desc: "Apportez une touche de soleil méditerranéen à votre intérieur avec ce plateau ondulé blanc et bleu cobalt orné d'un citron central.",
-    dimensions: "13cm x 13cm"
+    dimensions: "13cm x 13cm",
+    category: "trays"
   },
   {
     id: 5,
@@ -38,7 +42,8 @@ const products = [
     price: 10,
     image: "assets/pink-bow-tray.jpg",
     desc: "Un plateau ultra féminin en argile rose poudré vernie, orné d'un magnifique nœud en relief rouge et de petites fleurs blanches.",
-    dimensions: "15cm x 14cm"
+    dimensions: "15cm x 14cm",
+    category: "trays"
   },
   {
     id: 6,
@@ -46,7 +51,8 @@ const products = [
     price: 10,
     image: "assets/incense-holders.jpg",
     desc: "Un magnifique porte-encens en forme de vague ondulée modelé à la main, orné de jolis motifs floraux peints et de petites touches dorées étincelantes. Disponible en Rose fuchsia ou Gris sauge.",
-    dimensions: "14cm x 4.5cm"
+    dimensions: "14cm x 4.5cm",
+    category: "incense"
   },
   {
     id: 7,
@@ -54,7 +60,8 @@ const products = [
     price: 10,
     image: "assets/cup-candle-holders.jpg",
     desc: "Un adorable bougeoir de chambre rétro avec sa petite anse ronde pratique. Disponible en Jaune moucheté vitaminé ou en bicolore Orange & Bleu fleuri.",
-    dimensions: "Base ø 9cm, Hauteur 5cm"
+    dimensions: "Base ø 9cm, Hauteur 5cm",
+    category: "candleholders"
   },
   {
     id: 8,
@@ -62,7 +69,8 @@ const products = [
     price: 10,
     image: "assets/midnight-bow-tray.jpg",
     desc: "Un élégant vide-poche rond noir brillant, orné d'un magnifique nœud papillon en relief noir à pois blancs sculpté à la main, et parsemé de charmantes petites fleurs marguerites.",
-    dimensions: "Base ø 11cm, Hauteur 2.5cm"
+    dimensions: "Base ø 11cm, Hauteur 2.5cm",
+    category: "trays"
   }
 ];
 
@@ -113,6 +121,13 @@ const invoiceModal = document.getElementById("invoice-modal");
 const invoiceModalOverlay = document.getElementById("invoice-modal-overlay");
 const closeInvoiceModalBtn = document.getElementById("close-invoice-modal-btn");
 const invoiceDoneBtn = document.getElementById("invoice-done-btn");
+
+// Custom Order Selectors
+const customOrderModal = document.getElementById("custom-order-modal");
+const customOrderModalOverlay = document.getElementById("custom-order-modal-overlay");
+const closeCustomOrderBtn = document.getElementById("close-custom-order-btn");
+const customOrderTriggerBtn = document.getElementById("custom-order-trigger-btn");
+const customOrderForm = document.getElementById("custom-order-form");
 
 // Initialize App
 document.addEventListener("DOMContentLoaded", () => {
@@ -183,13 +198,51 @@ function setupEventListeners() {
       clearCartAndReset();
     });
   }
+
+  // Category Filter Listeners
+  const filterBtns = document.querySelectorAll(".filter-btn");
+  filterBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      filterBtns.forEach(b => b.classList.remove("active"));
+      e.currentTarget.classList.add("active");
+      const filter = e.currentTarget.getAttribute("data-filter");
+      renderProducts(filter);
+    });
+  });
+
+  // Custom Order triggers
+  if (customOrderTriggerBtn) {
+    customOrderTriggerBtn.addEventListener("click", () => {
+      if (customOrderModal && customOrderModalOverlay) {
+        customOrderModal.classList.add("visible");
+        customOrderModalOverlay.classList.add("visible");
+      }
+    });
+  }
+  if (closeCustomOrderBtn) {
+    closeCustomOrderBtn.addEventListener("click", () => {
+      customOrderModal.classList.remove("visible");
+      customOrderModalOverlay.classList.remove("visible");
+    });
+  }
+  if (customOrderModalOverlay) {
+    customOrderModalOverlay.addEventListener("click", () => {
+      customOrderModal.classList.remove("visible");
+      customOrderModalOverlay.classList.remove("visible");
+    });
+  }
+  if (customOrderForm) {
+    customOrderForm.addEventListener("submit", handleCustomOrder);
+  }
 }
 
-// Render Shop Products Grid
-function renderProducts() {
+// Render Shop Products Grid with Category Filtering
+function renderProducts(categoryFilter = 'all') {
   if (!productsGrid) return;
   
-  productsGrid.innerHTML = products.map(product => `
+  const filtered = categoryFilter === 'all' ? products : products.filter(p => p.category === categoryFilter);
+  
+  productsGrid.innerHTML = filtered.map(product => `
     <article class="product-card" id="product-${product.id}" onclick="openProductModal(${product.id})">
       <div class="product-img-wrapper">
         <img class="product-img" src="${product.image}" alt="${product.name}" loading="lazy">
@@ -631,5 +684,152 @@ function handleCheckout(e) {
     submitOrderToFormspree();
   }, 150);
   
+  // Trigger Confetti explosion to celebrate checkout
+  triggerConfetti();
+  
   alert("Merci pour votre commande ! Vos détails de livraison ont été envoyés par email avec succès.");
 }
+
+// Handle Custom Order Submission
+function handleCustomOrder(e) {
+  e.preventDefault();
+  
+  const type = document.getElementById("custom-type").value;
+  const color = document.getElementById("custom-color").value;
+  const decor = document.getElementById("custom-decor").value;
+  const text = document.getElementById("custom-text").value.trim();
+  
+  const name = document.getElementById("custom-name").value.trim();
+  const phone = document.getElementById("custom-phone").value.trim();
+  const city = document.getElementById("custom-city").value;
+  const address = document.getElementById("custom-address").value.trim();
+  
+  if (!type || !color || !decor || !name || !phone || !city || !address) {
+    alert("Veuillez remplir tous les champs obligatoires (*)");
+    return;
+  }
+
+  const invoiceNum = "MW-C" + Math.floor(1000 + Math.random() * 9000);
+  const today = new Date().toLocaleDateString('fr-FR');
+
+  // Populate invoice details DOM for the visual modal display
+  const invoiceIdEl = document.getElementById("invoice-id");
+  const invoiceDateEl = document.getElementById("invoice-date");
+  const clientNameEl = document.getElementById("invoice-client-name");
+  const clientPhoneEl = document.getElementById("invoice-client-phone");
+  const clientCityEl = document.getElementById("invoice-client-city");
+  const clientAddressEl = document.getElementById("invoice-client-address");
+  const tableBodyEl = document.getElementById("invoice-table-body");
+  const subtotalEl = document.getElementById("invoice-subtotal");
+  const grandTotalEl = document.getElementById("invoice-grand-total");
+
+  if (invoiceIdEl) invoiceIdEl.textContent = `#${invoiceNum}`;
+  if (invoiceDateEl) invoiceDateEl.textContent = today;
+  if (clientNameEl) clientNameEl.textContent = name;
+  if (clientPhoneEl) clientPhoneEl.textContent = phone;
+  if (clientCityEl) clientCityEl.textContent = city;
+  if (clientAddressEl) clientAddressEl.textContent = address;
+
+  const itemDesc = `Création Sur Mesure : ${type} (Base: ${color} | Décor: ${decor}${text ? " | Texte: " + text : ""})`;
+  
+  if (tableBodyEl) {
+    tableBodyEl.innerHTML = `
+      <tr>
+        <td>
+          <strong>${itemDesc}</strong><br>
+          <span style="font-size: 0.75rem; color: #718096;">Code: MW-C-CUSTOM | Dims: Unique</span>
+        </td>
+        <td class="text-center">1</td>
+        <td class="text-right">10.00 DT</td>
+        <td class="text-right">10.00 DT</td>
+      </tr>
+    `;
+  }
+  
+  if (subtotalEl) subtotalEl.textContent = "10.00 DT";
+  if (grandTotalEl) grandTotalEl.textContent = "10.00 DT";
+
+  // Construct dynamic link
+  const baseUrl = window.location.href.split("?")[0].split("index.html")[0];
+  const itemsData = [{
+    q: 1,
+    n: itemDesc,
+    p: 10,
+    c: "MW-C-CUSTOM",
+    d: "Unique"
+  }];
+  
+  const queryParams = new URLSearchParams({
+    id: invoiceNum,
+    date: today,
+    name: name,
+    phone: phone,
+    city: city,
+    address: address,
+    notes: "COMMANDE PERSONNALISÉE SUR MESURE",
+    items: JSON.stringify(itemsData)
+  });
+  
+  const invoiceLink = `${baseUrl}invoice.html?${queryParams.toString()}`;
+
+  // Submit JSON payload to Formspree
+  if (FORMSPREE_FORM_ID && FORMSPREE_FORM_ID !== "YOUR_FORMSPREE_ID") {
+    const formspreeUrl = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
+    const emailBody = {
+      email: "maisonofwishes@gmail.com",
+      _subject: `Commande PERSONNALISÉE Sur Mesure #${invoiceNum} - Maison of Wishes`,
+      "Lien de la Facture PDF": invoiceLink,
+      "Type d'objet": type,
+      "Couleur Fond": color,
+      "Décors & Motifs": decor,
+      "Texte Personnalisé": text || "Aucun",
+      "Nom complet": name,
+      "Téléphone": phone,
+      "Gouvernorat": city,
+      "Adresse": address,
+      "Total à payer": "10.00 DT"
+    };
+
+    fetch(formspreeUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(emailBody)
+    })
+    .catch(err => {
+      console.warn("Custom order formspree error: ", err);
+    });
+  }
+
+  // Close Custom Order Modal & Overlay
+  if (customOrderModal && customOrderModalOverlay) {
+    customOrderModal.classList.remove("visible");
+    customOrderModalOverlay.classList.remove("visible");
+  }
+
+  // Clear form inputs
+  customOrderForm.reset();
+
+  // Open Invoice Modal
+  openInvoiceModal();
+
+  // Trigger Confetti explosion
+  triggerConfetti();
+
+  alert("Votre commande sur mesure a été envoyée avec succès !");
+}
+
+// Explode celebratory brand-colored confetti
+function triggerConfetti() {
+  if (typeof confetti !== "undefined") {
+    confetti({
+      particleCount: 150,
+      spread: 80,
+      origin: { y: 0.6 },
+      colors: ['#df9c96', '#2c221e', '#fcfaf8', '#df9c96'] // Terracotta pink, dark clay, cream soft yellow
+    });
+  }
+}
+

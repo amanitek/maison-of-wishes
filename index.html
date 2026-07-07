@@ -13,7 +13,7 @@
   <meta property="og:image" content="assets/wishes-envelope.jpg">
   
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=3.0">
+  <link rel="stylesheet" href="style.css?v=3.1">
   
   <!-- Tab Icon (Use the envelope image as fallback or simple emoji) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
@@ -33,11 +33,18 @@
         <div class="logo-text">Maison of <span>Wishes</span></div>
       </a>
       
-      <button class="cart-icon-btn" id="open-cart-btn" aria-label="Ouvrir le panier">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-        <span>Mon Panier</span>
-        <span class="cart-count" id="cart-count-badge">0</span>
-      </button>
+      <div class="nav-actions">
+        <button class="custom-order-trigger-btn" id="custom-order-trigger-btn" aria-label="Lancer le créateur sur mesure">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          <span>Sur Mesure</span>
+        </button>
+        
+        <button class="cart-icon-btn" id="open-cart-btn" aria-label="Ouvrir le panier">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <span>Mon Panier</span>
+          <span class="cart-count" id="cart-count-badge">0</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -82,6 +89,32 @@
     </div>
   </section>
 
+  <!-- Craftsmanship / Savoir-Faire Section -->
+  <section class="craft-story-section" id="story">
+    <div class="section-header">
+      <span class="story-tag">Notre Savoir-Faire</span>
+      <h2>Façonné Doucement, Modelé avec Amour</h2>
+      <p>Chaque création est entièrement réalisée à la main selon un processus traditionnel en trois étapes clés.</p>
+    </div>
+    <div class="story-grid">
+      <div class="story-step-card">
+        <div class="step-num">01</div>
+        <h3>Modelage & Sculptage</h3>
+        <p>Façonnage délicat de l'argile brute pour créer des formes organiques uniques : enveloppes, plateaux ondulés et bougeoirs.</p>
+      </div>
+      <div class="story-step-card">
+        <div class="step-num">02</div>
+        <h3>Peinture de Précision</h3>
+        <p>Chaque détail floral, chaque nœud et chaque cœur est peint minutieusement à la main, garantissant qu'aucune pièce n'est identique.</p>
+      </div>
+      <div class="story-step-card">
+        <div class="step-num">03</div>
+        <h3>Double Vernissage</h3>
+        <p>Application de couches protectrices de vernis brillant haut de gamme pour protéger les couleurs et offrir une résistance durable.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- Shop Section -->
   <section class="shop-section" id="shop">
     <div class="section-header">
@@ -89,8 +122,49 @@
       <p>Explorez notre collection exclusive d'objets décoratifs en argile</p>
     </div>
     
+    <div class="category-filters-container">
+      <button class="filter-btn active" data-filter="all">Tous</button>
+      <button class="filter-btn" data-filter="trays">Vide-Poches & Plateaux</button>
+      <button class="filter-btn" data-filter="candleholders">Bougeoirs</button>
+      <button class="filter-btn" data-filter="incense">Porte-Encens</button>
+    </div>
+    
     <!-- Dynamically Populated by app.js -->
     <div class="products-grid" id="products-grid-container"></div>
+  </section>
+
+  <!-- Instagram Showcase Section -->
+  <section class="instagram-section">
+    <div class="section-header">
+      <h2>Suivez l'Atelier</h2>
+      <p>Rejoignez-nous sur Instagram <a href="https://www.instagram.com/maison.of.wishes/" target="_blank">@maison.of.wishes</a> pour voir l'envers du décor</p>
+    </div>
+    <div class="instagram-grid">
+      <div class="instagram-post-card">
+        <img src="assets/wishes-envelope.jpg" alt="Instagram Post 1" class="instagram-img">
+        <div class="instagram-overlay">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01z"/></svg>
+        </div>
+      </div>
+      <div class="instagram-post-card">
+        <img src="assets/midnight-bow-tray.jpg" alt="Instagram Post 2" class="instagram-img">
+        <div class="instagram-overlay">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01z"/></svg>
+        </div>
+      </div>
+      <div class="instagram-post-card">
+        <img src="assets/pink-bow-tray.jpg" alt="Instagram Post 3" class="instagram-img">
+        <div class="instagram-overlay">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01z"/></svg>
+        </div>
+      </div>
+      <div class="instagram-post-card">
+        <img src="assets/lemon-wavy-tray.jpg" alt="Instagram Post 4" class="instagram-img">
+        <div class="instagram-overlay">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01z"/></svg>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Cart Drawer (Panier Side Panel) -->
@@ -280,6 +354,22 @@
           </div>
         </div>
         
+        <!-- Order Tracking Timeline (Visual indicators) -->
+        <div class="order-timeline-container no-print">
+          <div class="timeline-step active">
+            <div class="timeline-bullet">✓</div>
+            <div class="timeline-label">Commande Reçue</div>
+          </div>
+          <div class="timeline-step active">
+            <div class="timeline-bullet">✓</div>
+            <div class="timeline-label">En Préparation</div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-bullet">3</div>
+            <div class="timeline-label">Expédié</div>
+          </div>
+        </div>
+        
         <!-- Items Table -->
         <table class="invoice-table">
           <thead>
@@ -332,6 +422,119 @@
   </div>
   <div class="modal-overlay" id="invoice-modal-overlay"></div>
 
+  <!-- Custom Order Modal (Personalized clay request) -->
+  <div class="modal" id="custom-order-modal">
+    <div class="modal-content" style="padding: 0;">
+      <button class="close-modal-btn" id="close-custom-order-btn" aria-label="Fermer le modal">&times;</button>
+      <div class="modal-info" style="flex: 1; padding: 40px 30px;">
+        <h2 style="font-size: 1.6rem; color: var(--text-dark); margin-bottom: 10px;">Commande Sur Mesure 🎨</h2>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px;">Personnalisez votre propre création en argile ! Choisissez le type d'objet, le coloris de base, les décors peints/modelés et ajoutez vos initiales.</p>
+        
+        <form class="checkout-form" id="custom-order-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="custom-type">Type de Création *</label>
+            <select id="custom-type" required>
+              <option value="" disabled selected>Choisir un objet</option>
+              <option value="Plateau Vide-Poche">Plateau Vide-Poche (10 DT)</option>
+              <option value="Porte-Carte Enveloppe">Porte-Carte Enveloppe (10 DT)</option>
+              <option value="Bougeoir Rétro">Bougeoir Rétro (10 DT)</option>
+              <option value="Porte-Encens Vague">Porte-Encens Vague (10 DT)</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="custom-color">Couleur de l'Argile (Fond) *</label>
+            <select id="custom-color" required>
+              <option value="" disabled selected>Choisir un coloris de base</option>
+              <option value="Blanc Pur / Crème">Blanc Pur / Crème</option>
+              <option value="Noir Midnight">Noir Midnight</option>
+              <option value="Rose Poudré Coquette">Rose Poudré Coquette</option>
+              <option value="Jaune Citron d'Amalfi">Jaune Citron d'Amalfi</option>
+              <option value="Gris Sage / Olive">Gris Sage / Olive</option>
+              <option value="Orange Sanguine">Orange Sanguine</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="custom-decor">Ornements & Peinture *</label>
+            <select id="custom-decor" required>
+              <option value="" disabled selected>Choisir les motifs en relief/peints</option>
+              <option value="Nœud Papillon en Relief (Rouge)">Nœud Papillon en Relief (Rouge)</option>
+              <option value="Nœud Papillon en Relief (Noir à Pois Blancs)">Nœud Papillon en Relief (Noir à Pois Blancs)</option>
+              <option value="Cœur Rouge (Façon sceau de cire)">Cœur Rouge (Façon sceau de cire)</option>
+              <option value="Fleurs Marguerites Peintes">Fleurs Marguerites Peintes</option>
+              <option value="Citron Peint à la main">Citron Peint à la main</option>
+              <option value="Minimaliste (Uni et épuré)">Minimaliste (Uni et épuré)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="custom-text">Initiales ou Mot à inscrire (Optionnel)</label>
+            <input type="text" id="custom-text" placeholder="Ex: A.B or LOVE (Max 8 lettres)" maxlength="8">
+          </div>
+          
+          <hr style="border: 0; border-top: 1px solid var(--clay-border); margin: 25px 0;">
+          <h3 style="font-size: 1.15rem; color: var(--text-dark); margin-bottom: 15px; font-family: var(--font-sans); font-weight: 600;">Vos Coordonnées</h3>
+
+          <div class="form-group">
+            <label for="custom-name">Nom complet *</label>
+            <input type="text" id="custom-name" placeholder="Ex: Ameni Ben Ali" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="custom-phone">Numéro de téléphone *</label>
+            <input type="tel" id="custom-phone" placeholder="Ex: 50 123 456" required>
+          </div>
+
+          <div class="form-group">
+            <label for="custom-city">Gouvernorat *</label>
+            <select id="custom-city" required>
+              <option value="" disabled selected>Choisir un gouvernorat</option>
+              <option value="Tunis">Tunis</option>
+              <option value="Ariana">Ariana</option>
+              <option value="Ben Arous">Ben Arous</option>
+              <option value="Manouba">Manouba</option>
+              <option value="Nabeul">Nabeul</option>
+              <option value="Sousse">Sousse</option>
+              <option value="Monastir">Monastir</option>
+              <option value="Mahdia">Mahdia</option>
+              <option value="Sfax">Sfax</option>
+              <option value="Bizerte">Bizerte</option>
+              <option value="Béja">Béja</option>
+              <option value="Jendouba">Jendouba</option>
+              <option value="Le Kef">Le Kef</option>
+              <option value="Siliana">Siliana</option>
+              <option value="Kairouan">Kairouan</option>
+              <option value="Kasserine">Kasserine</option>
+              <option value="Sidi Bouzid">Sidi Bouzid</option>
+              <option value="Gabès">Gabès</option>
+              <option value="Médenine">Médenine</option>
+              <option value="Tataouine">Tataouine</option>
+              <option value="Gafsa">Gafsa</option>
+              <option value="Tozeur">Tozeur</option>
+              <option value="Kébili">Kébili</option>
+              <option value="Zaghouan">Zaghouan</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="custom-address">Adresse de livraison complète *</label>
+            <input type="text" id="custom-address" placeholder="Ex: 12 Rue des Jasmin, 3ème étage" required>
+          </div>
+          
+          <button type="submit" class="place-order-btn" id="submit-custom-btn" style="width: 100%; margin-top: 20px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 5px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Envoyer ma commande personnalisée</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="custom-order-modal-overlay"></div>
+
+  <!-- Confetti effects for order checkout success -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <!-- Footer -->
   <footer id="main-footer">
     <div class="footer-content">
@@ -360,6 +563,6 @@
   </footer>
 
   <!-- Script File -->
-  <script src="app.js?v=3.0"></script>
+  <script src="app.js?v=3.1"></script>
 </body>
 </html>
