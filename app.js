@@ -55,6 +55,14 @@ const products = [
     image: "assets/cup-candle-holders.jpg",
     desc: "Un adorable bougeoir de chambre rétro avec sa petite anse ronde pratique. Disponible en Jaune moucheté vitaminé ou en bicolore Orange & Bleu fleuri.",
     dimensions: "Base ø 9cm, Hauteur 5cm"
+  },
+  {
+    id: 8,
+    name: 'Plateau Nœud Noir "Midnight Bow"',
+    price: 10,
+    image: "assets/midnight-bow-tray.jpg",
+    desc: "Un élégant vide-poche rond noir brillant, orné d'un magnifique nœud papillon en relief noir à pois blancs sculpté à la main, et parsemé de charmantes petites fleurs marguerites.",
+    dimensions: "Base ø 11cm, Hauteur 2.5cm"
   }
 ];
 
