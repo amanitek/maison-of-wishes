@@ -9,20 +9,8 @@ Le site permet de présenter les produits, de gérer un panier persistant (via `
 - **Design Premium Organique** : Une esthétique douce inspirée de la poterie et de l'argile, avec des polices raffinées (Outfit, Playfair Display), des ombres douces et une structure entièrement responsive.
 - **Panier Interactif (Drawer)** : Un volet latéral pour ajuster les quantités, supprimer des articles, et voir le total instantanément.
 - **Formulaire de Commande Intégré** : Formulaire demandant le nom, numéro de téléphone, gouvernorat (sélection facile parmi les 24 gouvernorats de Tunisie) et adresse complète.
-- **Validation & Redirection WhatsApp** : Génère un message structuré et lisible pour le vendeur et redirige le client vers WhatsApp pour l'envoi de la commande.
+- **Validation & affichage de la facture** : Génère un message structuré et lisible pour le vendeur .
 - **Optimisé pour GitHub Pages** : Fichiers statiques (HTML/CSS/JS) prêts à être hébergés gratuitement.
-
-## Configuration du Numéro WhatsApp
-
-Pour recevoir les messages de commande sur votre propre numéro de téléphone :
-1. Ouvrez le fichier [app.js](file:///app.js)
-2. À la ligne 25, modifiez la variable `SELLER_WHATSAPP_NUMBER` :
-   ```javascript
-   const SELLER_WHATSAPP_NUMBER = "216xxxxxxxx"; // Mettez votre numéro avec l'indicatif pays (sans le signe + ou 00)
-   ```
-   *Exemple pour la Tunisie (indicatif 216) et le numéro 50 123 456 :* `"21650123456"`
-
----
 
 ## Guide de Déploiement sur GitHub Pages
 
