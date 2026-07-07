@@ -1438,3 +1438,106 @@ footer {
     padding: 0 !important;
   }
 }
+
+/* Mobile Screen Layout Adjustments (General, Navigation, Invoice, Cards) */
+@media (max-width: 768px) {
+  .invoice-sheet {
+    padding: 20px 15px !important;
+  }
+  
+  .invoice-header {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 15px !important;
+  }
+  
+  .invoice-meta h2, .invoice-meta p {
+    text-align: center !important;
+  }
+  
+  .invoice-logo-area {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 8px !important;
+  }
+  
+  .invoice-details-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+    margin-bottom: 25px !important;
+  }
+  
+  .invoice-details-grid h4 {
+    margin-bottom: 8px !important;
+  }
+  
+  .invoice-table th, .invoice-table td {
+    padding: 8px 10px !important;
+    font-size: 0.82rem !important;
+  }
+  
+  .invoice-summary {
+    max-width: 100% !important;
+    margin-bottom: 25px !important;
+  }
+  
+  .invoice-actions {
+    padding: 15px !important;
+    justify-content: center !important;
+  }
+  
+  .invoice-action-btn {
+    width: 100% !important;
+    font-size: 0.9rem !important;
+    padding: 10px 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-text {
+    font-size: 1.1rem !important;
+  }
+  
+  .logo-img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .logo {
+    gap: 6px !important;
+  }
+  
+  .cart-icon-btn span:not(.cart-count) {
+    display: none !important;
+  }
+  
+  .cart-icon-btn {
+    padding: 10px 12px !important;
+  }
+  
+  .products-grid {
+    grid-template-columns: 1fr !important;
+    gap: 25px !important;
+  }
+  
+  .hero {
+    padding: 110px 15px 50px !important;
+  }
+  
+  .hero h1 {
+    font-size: 2.1rem !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .hero p {
+    font-size: 0.95rem !important;
+    margin-bottom: 25px !important;
+  }
+  
+  .hero-cta {
+    padding: 14px 28px !important;
+    font-size: 1rem !important;
+  }
+}
+

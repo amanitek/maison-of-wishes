@@ -228,6 +228,50 @@
       .invoice-actions {
         display: none !important;
       }
+    @media (max-width: 768px) {
+      body {
+        padding: 10px !important;
+      }
+      .invoice-container {
+        border-radius: 12px;
+      }
+      .invoice-sheet {
+        padding: 20px 15px !important;
+      }
+      .invoice-header {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 15px !important;
+      }
+      .invoice-meta h2, .invoice-meta p {
+        text-align: center !important;
+      }
+      .invoice-logo-area {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 8px !important;
+      }
+      .invoice-details-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        margin-bottom: 25px !important;
+      }
+      .invoice-table th, .invoice-table td {
+        padding: 8px 10px !important;
+        font-size: 0.82rem !important;
+      }
+      .invoice-summary {
+        max-width: 100% !important;
+        margin-bottom: 25px !important;
+      }
+      .invoice-actions {
+        padding: 15px !important;
+        justify-content: center !important;
+      }
+      .invoice-action-btn {
+        width: 100% !important;
+      }
     }
   </style>
 </head>
